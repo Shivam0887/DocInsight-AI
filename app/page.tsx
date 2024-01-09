@@ -8,34 +8,46 @@ export default function Home() {
   return (
     <>
       <MaxWidthWrapper
-        className="mb-12 sm:pt-52 pt-40 pb-20 flex flex-col sm:items-center
-         sm:justify-center text-center items-start pl-4 sm:pl-0"
+        className="bg-[#0a0a0a] max-w-full min-h-screen mb-12 relative sm:pl-0 
+         sm:pt-52 pt-40 pb-20 flex flex-col sm:justify-center text-center 
+         sm:items-center items-start pl-4 overflow-hidden"
       >
+        <Image
+          src="/Hero.png"
+          alt="hero-section"
+          priority
+          width={1440}
+          height={875}
+          className="hidden absolute max-w-none -z-10 top-16 lg:animate-resize sm:block"
+        />
         <div
           className="flex max-w-fit items-center justify-center
             space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white
             px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300  
             hover:bg-white/95 cursor-pointer"
         >
-          <p className="text-sm font-semibold text-gray-700">
+          <p className="text-sm font-semibold text-gray-700 select-none">
             DocInsight-AI is now public!
           </p>
         </div>
-        <div className="mt-10 flex flex-col items-center justify-center">
+        <div className="mt-10 flex flex-col items-center justify-center select-none">
           <h1 className="max-w-4xl text-muted text-5xl font-medium md:text-6xl leading-snug sm:text-center text-left">
-            Chat with your <span className="text-blue-600">documents</span> in
+            Chat with your <span className="text-yellow-500">documents</span> in
             seconds.
           </h1>
-          <p className="mt-4 md:mt-10 max-w-2xl pr-4 text-muted sm:text-md sm:text-center text-left">
+          <p className="mt-4 md:mt-10 max-w-2xl pr-4 text-muted sm:text-md sm:text-center text-left select-none">
             DocInsight-AI revolutionizes your interaction with PDF documents,
             transforming them into engaging conversational partners.
           </p>
         </div>
-        <div className="mt-8 flex items-center p-3.5 rounded-lg text-black bg-blue-600 hover:bg-blue-700 transition gap-2 font-semibold cursor-pointer">
-          <Upload className="w-5 h-5 mt-1" />
+        <button
+          className="select-none mt-8 flex text-sm items-center p-3.5 rounded-lg text-black
+         bg-yellow-500 hover:bg-yellow-400 transition gap-2 font-semibold cursor-pointer"
+        >
+          <Upload className="w-5 h-5" />
           <p>Upload Document</p>
-        </div>
-        <div className="mt-6 flex flex-col gap-y-4 items-start sm:items-center">
+        </button>
+        <div className="select-none mt-6 flex flex-col gap-y-4 items-start sm:items-center">
           <p className="text-base text-muted">Supported formats</p>
           <div className="space-x-1">
             <span className="px-2 p-1.5 bg-zinc-800 text-zinc-400 rounded-lg font-medium text-[12px] text-muted">
@@ -52,7 +64,7 @@ export default function Home() {
         <p className="text-[#2f2b43] text-center text-4xl font-bold leading-relaxed">
           Supercharge Document
         </p>
-        <p className="text-blue-600 text-4xl font-bold">Interactions</p>
+        <p className="text-yellow-600 text-4xl font-bold">Interactions</p>
         <p className="mt-4 sm:mt-6 text-center text-sm text-zinc-500">
           Have you ever imagined your documents having a voice of their own?
           With DocInsight, this is now a reality! Infused with the power of
@@ -101,9 +113,7 @@ export default function Home() {
               </p>
 
               <Link
-                className={buttonVariants({
-                  className: "my-5 rounded-xl",
-                })}
+                className="my-5 rounded-xl bg-black text-white text-sm p-3 hover:bg-black/95 transition"
                 href="/dashboard"
                 target="_blank"
               >
@@ -137,7 +147,9 @@ export default function Home() {
               className="flex flex-col space-y-2 border-l-4 border-zinc-300 
             py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pt-4"
             >
-              <span className="text-sm font-medium text-blue-600">Step 1</span>
+              <span className="text-sm font-medium text-yellow-600">
+                Step 1
+              </span>
               <span className="text-xl font-semibold">
                 Sign up for an account
               </span>
@@ -145,7 +157,7 @@ export default function Home() {
                 Starting out with a free plan or choose our{" "}
                 <Link
                   href="/pricing"
-                  className="text-blue-700 underline underline-offset-2"
+                  className="text-yellow-500 underline underline-offset-2"
                 >
                   pro plan
                 </Link>
@@ -158,7 +170,9 @@ export default function Home() {
               className="flex flex-col space-y-2 border-l-4 border-zinc-300 
             py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pt-4"
             >
-              <span className="text-sm font-medium text-blue-600">Step 2</span>
+              <span className="text-sm font-medium text-yellow-600">
+                Step 2
+              </span>
               <span className="text-xl font-semibold">Upload your file</span>
               <span className="mt-2 text-zinc-700">
                 We&apos;ll process your file and make it ready for you to chat
@@ -171,7 +185,9 @@ export default function Home() {
               className="flex flex-col space-y-2 border-l-4 border-zinc-300 
             py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pt-4"
             >
-              <span className="text-sm font-medium text-blue-600">Step 3</span>
+              <span className="text-sm font-medium text-yellow-600">
+                Step 3
+              </span>
               <span className="text-xl font-semibold">
                 Start asking questions
               </span>
