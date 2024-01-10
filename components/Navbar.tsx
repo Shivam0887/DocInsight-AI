@@ -44,7 +44,7 @@ const NavbarLinks = () => {
 const Navbar = () => {
   return (
     <MaxWidthWrapper className="flex justify-center">
-      <nav className="text-white p-3 fixed max-w-[70%] shadow-md rounded-xl top-6 z-30 bg-[rgba(13,13,13,0.8)] backdrop-blur-lg">
+      <nav className="text-white p-3 fixed shadow-md rounded-xl top-6 z-30 bg-[rgba(13,13,13,0.8)] backdrop-blur-lg">
         <div className="flex w-full items-center px-4 gap-x-4">
           <Image src="/Logo.svg" alt="logo" width={30} height={30} />
 

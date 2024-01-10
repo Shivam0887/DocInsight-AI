@@ -79,3 +79,14 @@
 .scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
   border-radius: 7px;
 }
+
+.invisible-animate-scroll {
+  opacity: 0;
+  transform: translateY(100px);
+  transition: transform 400ms;
+}
+
+.animate-scroll {
+  transform: translateY(0px);
+  opacity: 1;
+}

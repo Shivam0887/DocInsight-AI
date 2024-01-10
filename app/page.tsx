@@ -1,12 +1,13 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import { buttonVariants } from "@/components/ui/button";
-import { ArrowRight, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { AnimateOnScroll } from "@/lib/animateOnScroll";
 
 export default function Home() {
   return (
     <>
+      <AnimateOnScroll />
       <MaxWidthWrapper
         className="bg-[#0a0a0a] max-w-full min-h-screen mb-12 relative sm:pl-0 
          sm:pt-52 pt-40 pb-20 flex flex-col sm:justify-center text-center 
@@ -60,7 +61,7 @@ export default function Home() {
         </div>
       </MaxWidthWrapper>
 
-      <div className="mt-10 max-w-[650px] flex flex-col items-center p-2 mx-auto">
+      <div className="invisible-animate-scroll mt-10 max-w-[650px] flex flex-col items-center p-2 mx-auto">
         <p className="text-[#2f2b43] text-center text-4xl font-bold leading-relaxed">
           Supercharge Document
         </p>
@@ -76,57 +77,55 @@ export default function Home() {
       </div>
 
       {/* Value proposition section */}
-      <div>
-        <div className="mx-auto max-w-6xl px-6 mt-16 sm:mt-24">
-          <div className="-m-2 flex w-full flex-col-reverse items-start lg:flex-row gap-x-8 lg:items-center rounded-xl bg-[#f8f9ff] p-10 pb-0 lg:-m-4 lg:rounded-3xl">
-            <div className="mx-auto relative flex-1 rounded-md border-2 border-zinc-200 border-b-0 border-r-0">
-              <Image
-                src="/images/dashboard-preview-mini.jpg"
-                width={590}
-                height={862}
-                alt="product-preview"
-                quality={100}
-              />
-              <div className="w-full h-full absolute top-0 bg-gradient-to-r from-transparent from-30% to-[#f8f9ff]" />
-            </div>
+      <div className="invisible-animate-scroll opacity-0 translate-y-[100px]  mx-auto max-w-6xl px-6 mt-16">
+        <div className="-m-2 flex w-full flex-col-reverse items-start lg:flex-row gap-x-8 lg:items-center rounded-xl bg-[#f8f9ff] p-10 pb-0 lg:-m-4 lg:rounded-3xl">
+          <div className="mx-auto relative flex-1 rounded-md border-2 border-zinc-200 border-b-0 border-r-0">
+            <Image
+              src="/images/dashboard-preview-mini.jpg"
+              width={590}
+              height={862}
+              alt="product-preview"
+              quality={100}
+            />
+            <div className="w-full h-full absolute top-0 bg-gradient-to-r from-transparent from-30% to-[#f8f9ff]" />
+          </div>
 
-            <div className="flex flex-col flex-1 items-start gap-y-5">
-              <Image
-                src="/ChatIcon.svg"
-                width={70}
-                height={70}
-                alt="ChatIcon"
-                className="drop-shadow-lg"
-              />
-              <div className="text-[#2f2b43] text-4xl font-bold">
-                <p className="xs:text-nowrap">Converse, Learn, Track -</p>
-                <p>All on Your Terms</p>
-              </div>
-              <p className="text-[#7f7e8e] text-sm leading-relaxed">
-                Discover a brand new way to interact with your documents on
-                DocInsight.
-              </p>
-              <p className="text-[#7f7e8e] text-sm leading-relaxed">
-                {
-                  "Here, you give voice to your documents, turning them into engaging chat partners. What's more? You can effortlessly track and revisit all your conversations. Take control, ask questions, get answers, and never lose track of your learning. Ready to make your documents work for you?"
-                }
-              </p>
-
-              <Link
-                className="my-5 rounded-xl bg-black text-white text-sm p-3 hover:bg-black/95 transition"
-                href="/dashboard"
-                target="_blank"
-              >
-                Get Started
-                <span className="ml-2 -mt-1 font-bold">{">"}</span>
-              </Link>
+          <div className="flex flex-col flex-1 items-start gap-y-5">
+            <Image
+              src="/ChatIcon.svg"
+              width={70}
+              height={70}
+              alt="ChatIcon"
+              className="drop-shadow-lg"
+            />
+            <div className="text-[#2f2b43] text-4xl font-bold">
+              <p className="xs:text-nowrap">Converse, Learn, Track -</p>
+              <p>All on Your Terms</p>
             </div>
+            <p className="text-[#7f7e8e] text-sm leading-relaxed">
+              Discover a brand new way to interact with your documents on
+              DocInsight.
+            </p>
+            <p className="text-[#7f7e8e] text-sm leading-relaxed">
+              {
+                "Here, you give voice to your documents, turning them into engaging chat partners. What's more? You can effortlessly track and revisit all your conversations. Take control, ask questions, get answers, and never lose track of your learning. Ready to make your documents work for you?"
+              }
+            </p>
+
+            <Link
+              className="my-5 rounded-xl bg-black text-white text-sm p-3 hover:bg-black/95 transition"
+              href="/dashboard"
+              target="_blank"
+            >
+              Get Started
+              <span className="ml-2 -mt-1 font-bold">{">"}</span>
+            </Link>
           </div>
         </div>
       </div>
 
       {/* Feature section */}
-      <div className="mx-auto my-24 max-w-5xl sm:mt-32">
+      <div className="invisible-animate-scroll mx-auto my-24 max-w-5xl sm:mt-32">
         <div className="mb-12 px-6 lg:px-8">
           <div className="mx-auto max-w-2xl sm:text-center">
             <h2 className="mt-2 font-bold text-4xl text-[#2f2b43] sm:text-5xl">
@@ -199,7 +198,7 @@ export default function Home() {
           </li>
         </ol>
 
-        <div className="mt-16 sm:mt-24 mx-auto max-w-6xl px-6 md:px-0">
+        <div className="invisible-animate-scroll mt-16 sm:mt-24 mx-auto max-w-6xl px-6 md:px-0">
           <div className="rounded-md border-2 border-zinc-200 border-b-0 border-r-0">
             <Image
               src="/images/file-upload-preview.jpg"
