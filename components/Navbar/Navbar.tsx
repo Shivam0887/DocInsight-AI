@@ -1,15 +1,17 @@
-import MaxWidthWrapper from "./MaxWidthWrapper";
 import Link from "next/link";
-import { buttonVariants } from "./ui/button";
 import Image from "next/image";
+
 import { ChevronRight } from "lucide-react";
 import ToggleNavbar from "./toggle-navbar";
+
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import { buttonVariants } from "@/components/ui/button";
 
 const NavbarLinks = () => {
   return (
     <>
       <Link
-        href="/pricing"
+        href="/"
         className={buttonVariants({
           variant: "ghost",
           size: "sm",
@@ -18,7 +20,7 @@ const NavbarLinks = () => {
         Home
       </Link>
       <Link
-        href="/conversations"
+        href="/chat"
         className={buttonVariants({
           variant: "ghost",
           size: "sm",
@@ -52,7 +54,7 @@ const Navbar = () => {
             <NavbarLinks />
           </div>
           <Link
-            href="/sign-in"
+            href="/chat"
             className="flex ml-5 sm:ml-0 p-3 justify-center font-medium text-sm bg-zinc-800 hover:bg-zinc-900 transition rounded-xl"
           >
             <p className="text-nowrap">Start For Free</p>

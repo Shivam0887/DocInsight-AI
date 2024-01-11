@@ -2,17 +2,26 @@ import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { Upload } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimateOnScroll } from "@/lib/animateOnScroll";
+import { AnimateOnScroll, MoveToTop } from "@/lib/animateOnScroll";
+import { connectToDB } from "@/lib/connectToDB";
+import Navbar from "@/components/Navbar/Navbar";
+import { UserButton } from "@clerk/nextjs";
 
 export default function Home() {
+  connectToDB();
   return (
-    <>
+    <div>
+      <Navbar />
+      <MoveToTop />
       <AnimateOnScroll />
       <MaxWidthWrapper
         className="bg-[#0a0a0a] max-w-full min-h-screen mb-12 relative sm:pl-0 
          sm:pt-52 pt-40 pb-20 flex flex-col sm:justify-center text-center 
          sm:items-center items-start pl-4 overflow-hidden"
       >
+        <div className="absolute z-50 top-10 right-5 sm:right-8">
+          <UserButton afterSignOutUrl="/" />
+        </div>
         <Image
           src="/Hero.png"
           alt="hero-section"
@@ -211,6 +220,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
