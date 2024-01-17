@@ -4,68 +4,72 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimateOnScroll, MoveToTop } from "@/lib/animateOnScroll";
 import { connectToDB } from "@/lib/connectToDB";
-import Navbar from "@/components/Navbar/Navbar";
+import Navbar from "@/components/Navigation/Navbar";
 import { UserButton } from "@clerk/nextjs";
 
 export default function Home() {
-  connectToDB();
   return (
     <div>
       <Navbar />
       <MoveToTop />
       <AnimateOnScroll />
       <MaxWidthWrapper
-        className="bg-[#0a0a0a] max-w-full min-h-screen mb-12 relative sm:pl-0 
-         sm:pt-52 pt-40 pb-20 flex flex-col sm:justify-center text-center 
-         sm:items-center items-start pl-4 overflow-hidden"
+        className="bg-[#0a0a0a] max-w-full relative sm:pl-0 
+         sm:pt-52 pt-40 pb-32 pl-4 overflow-hidden"
       >
-        <div className="absolute z-50 top-10 right-5 sm:right-8">
-          <UserButton afterSignOutUrl="/" />
-        </div>
-        <Image
-          src="/Hero.png"
-          alt="hero-section"
-          priority
-          width={1440}
-          height={875}
-          className="hidden absolute max-w-none -z-10 top-16 lg:animate-resize sm:block"
-        />
         <div
-          className="flex max-w-fit items-center justify-center
-            space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white
-            px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300  
-            hover:bg-white/95 cursor-pointer"
+          className="flex flex-col sm:justify-center text-center 
+         sm:items-center items-start"
         >
-          <p className="text-sm font-semibold text-gray-700 select-none">
-            DocInsight-AI is now public!
-          </p>
-        </div>
-        <div className="mt-10 flex flex-col items-center justify-center select-none">
-          <h1 className="max-w-4xl text-muted text-5xl font-medium md:text-6xl leading-snug sm:text-center text-left">
-            Chat with your <span className="text-yellow-500">documents</span> in
-            seconds.
-          </h1>
-          <p className="mt-4 md:mt-10 max-w-2xl pr-4 text-muted sm:text-md sm:text-center text-left select-none">
-            DocInsight-AI revolutionizes your interaction with PDF documents,
-            transforming them into engaging conversational partners.
-          </p>
-        </div>
-        <button
-          className="select-none mt-8 flex text-sm items-center p-3.5 rounded-lg text-black
-         bg-yellow-500 hover:bg-yellow-400 transition gap-2 font-semibold cursor-pointer"
-        >
-          <Upload className="w-5 h-5" />
-          <p>Upload Document</p>
-        </button>
-        <div className="select-none mt-6 flex flex-col gap-y-4 items-start sm:items-center">
-          <p className="text-base text-muted">Supported formats</p>
-          <div className="space-x-1">
-            <span className="px-2 p-1.5 bg-zinc-800 text-zinc-400 rounded-lg font-medium text-[12px] text-muted">
-              PDF
-            </span>
-            <span className="px-2 py-1.5 bg-zinc-800 text-zinc-400 rounded-lg font-medium text-[12px] text-muted">
-              TXT
-            </span>
+          <div className="absolute z-50 top-10 right-5 sm:right-8">
+            <UserButton afterSignOutUrl="/" />
+          </div>
+          <Image
+            src="/Hero.png"
+            alt="hero-section"
+            priority
+            width={1440}
+            height={875}
+            className="hidden absolute max-w-none -z-10 top-16 lg:animate-resize sm:block"
+          />
+          <div
+            className="flex max-w-fit items-center justify-center
+              space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white
+              px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300  
+              hover:bg-white/95 cursor-pointer"
+          >
+            <p className="text-sm font-semibold text-gray-700 select-none">
+              DocInsight-AI is now public!
+            </p>
+          </div>
+          <div className="mt-10 flex flex-col items-center justify-center select-none">
+            <h1 className="max-w-4xl text-muted text-5xl font-medium md:text-6xl leading-snug sm:text-center text-left">
+              Chat with your <span className="text-yellow-500">documents</span>{" "}
+              in seconds.
+            </h1>
+            <p className="mt-4 md:mt-10 max-w-2xl pr-4 text-muted sm:text-md sm:text-center text-left select-none">
+              DocInsight-AI revolutionizes your interaction with PDF documents,
+              transforming them into engaging conversational partners.
+            </p>
+          </div>
+          <Link
+            href="/file-upload"
+            className="select-none mt-8 flex text-sm items-center p-3.5 rounded-lg text-black
+           bg-yellow-500 hover:bg-yellow-400 transition gap-2 font-semibold cursor-pointer"
+          >
+            <Upload className="w-5 h-5" />
+            <p>Upload Document</p>
+          </Link>
+          <div className="select-none mt-6 flex flex-col gap-y-4 items-start sm:items-center">
+            <p className="text-base text-muted">Supported formats</p>
+            <div className="space-x-1">
+              <span className="px-2 p-1.5 bg-zinc-800 text-zinc-400 rounded-lg font-medium text-[12px] text-muted">
+                PDF
+              </span>
+              <span className="px-2 py-1.5 bg-zinc-800 text-zinc-400 rounded-lg font-medium text-[12px] text-muted">
+                TXT
+              </span>
+            </div>
           </div>
         </div>
       </MaxWidthWrapper>
@@ -123,7 +127,7 @@ export default function Home() {
 
             <Link
               className="my-5 rounded-xl bg-black text-white text-sm p-3 hover:bg-black/95 transition"
-              href="/dashboard"
+              href="/chat"
               target="_blank"
             >
               Get Started

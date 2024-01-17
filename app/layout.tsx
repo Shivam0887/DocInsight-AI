@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from "@clerk/themes";
+import Provider from "@/components/Provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -37,7 +38,7 @@ export default function RootLayout({
             poppins.className
           )}
         >
-          {children}
+          <Provider>{children}</Provider>
         </body>
       </html>
     </ClerkProvider>
