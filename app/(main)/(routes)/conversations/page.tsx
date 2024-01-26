@@ -1,7 +1,14 @@
-import React from "react";
+import { Ghost } from "lucide-react";
 
 const Page = () => {
-  return <div>Page</div>;
+  return (
+    <div className="flex-1 flex items-center justify-center ">
+      <div className="flex flex-col gap-2 items-center">
+        <Ghost className="w-6 h-6" />
+        <p className="text-zinc-400 text-sm">Pretty empty out here.</p>
+      </div>
+    </div>
+  );
 };
 
 export default Page;

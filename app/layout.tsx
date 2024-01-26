@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from "@clerk/themes";
 import Provider from "@/components/Provider";
+import "@uploadthing/react/styles.css";
 
 const poppins = Poppins({
   subsets: ["latin"],

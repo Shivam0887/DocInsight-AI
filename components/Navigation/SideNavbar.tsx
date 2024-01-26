@@ -20,8 +20,8 @@ const SideNavbar = () => {
   const pathName = usePathname().split("/")[1];
 
   return (
-    <div className="min-h-screen w-14 sm:w-[4.5rem] bg-zinc-950">
-      <div className="pt-5 flex flex-col items-center gap-y-6 ">
+    <div className="h-full w-14 sm:w-[4.5rem] bg-zinc-950">
+      <div className="h-full pt-5 flex flex-col items-center gap-y-6 ">
         <Link href="/" className="w-6 sm:w-8">
           <Image
             src="/Logo.svg"

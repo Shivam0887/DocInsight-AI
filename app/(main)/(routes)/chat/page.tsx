@@ -1,6 +1,6 @@
-import Dashboard from "@/components/Dashboard";
+import Description from "@/components/Description";
 import { connectToDB } from "@/lib/connectToDB";
-import { User } from "@/lib/models/models";
+import { User, UserType } from "@/lib/models/models";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
@@ -8,9 +8,9 @@ export default async function ChatPage() {
   const { userId } = auth();
 
   connectToDB();
-  const user = await User.findOne({ userId });
+  const user = await User.findOne<UserType | undefined>({ userId });
 
-  if (user?.isConversation) redirect("/conversations");
+  if (user?.files.length) redirect("/conversations");
 
-  return <Dashboard />;
+  return <Description />;
 }

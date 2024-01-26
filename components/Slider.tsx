@@ -19,7 +19,10 @@ export default function Slider({
 }) {
   return (
     <Sheet>
-      <SheetTrigger asChild className="flex items-center cursor-pointer h-full">
+      <SheetTrigger
+        asChild
+        className="flex items-center cursor-pointer min-h-screen "
+      >
         <div>
           <ChevronRight className="ml-3 p-1 w-6 h-6 fixed stroke-white bg-zinc-800 rounded-full" />
         </div>

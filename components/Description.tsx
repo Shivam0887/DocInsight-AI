@@ -10,8 +10,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useState, useEffect } from "react";
+import { trpc } from "@/app/_trpc/client";
 
-const Dashboard = () => {
+const Description = () => {
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const { data } = trpc.getFiles.useQuery({ countOnly: true });
+
+  useEffect(() => {
+    setIsRedirecting(!!data?.files.length);
+  }, [data]);
+
   return (
     <MaxWidthWrapper className="pt-14">
       <div className="bg-white mx-auto lg:w-full lg:max-w-none max-w-max rounded-xl flex flex-col items-center lg:flex-row lg:justify-between gap-y-8 p-8">
@@ -28,7 +37,7 @@ const Dashboard = () => {
           </div>
         </div>
         <Link
-          href="/file-upload"
+          href={`/file-upload?new=${isRedirecting}`}
           className="lg:ml-5 text-xs lg:text-sm font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl py-4 lg:py-5 px-6 lg:px-10 transition"
         >
           Start Conversation
@@ -75,4 +84,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Description;

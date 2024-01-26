@@ -14,10 +14,10 @@ export default function MainLayout({
 
   return (
     <div className="flex w-full min-h-screen">
-      <div className="hidden sm:block">
+      <div className="hidden sm:block min-h-[200%]">
         <SideNavbar />
       </div>
-      <div className="block sm:hidden">
+      <div className="sm:hidden">
         <Slider side="left">
           <SideNavbar />
         </Slider>

@@ -60,7 +60,7 @@ const Navbar = () => {
             <p className="text-nowrap">Start For Free</p>
             <ChevronRight className="w-5 h-5" />
           </Link>
-          <div className="block sm:hidden">
+          <div className="sm:hidden">
             <ToggleNavbar>
               <NavbarLinks />
             </ToggleNavbar>

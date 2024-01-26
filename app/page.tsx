@@ -1,11 +1,10 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import { Upload } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimateOnScroll, MoveToTop } from "@/lib/animateOnScroll";
-import { connectToDB } from "@/lib/connectToDB";
 import Navbar from "@/components/Navigation/Navbar";
 import { UserButton } from "@clerk/nextjs";
+import UploadFileModal from "@/components/models/UploadFile.model";
 
 export default function Home() {
   return (
@@ -14,8 +13,8 @@ export default function Home() {
       <MoveToTop />
       <AnimateOnScroll />
       <MaxWidthWrapper
-        className="bg-[#0a0a0a] max-w-full relative sm:pl-0 
-         sm:pt-52 pt-40 pb-32 pl-4 overflow-hidden"
+        className="bg-[#0a0a0a] max-w-full relative
+         sm:pt-52 pt-40 pb-32 overflow-hidden"
       >
         <div
           className="flex flex-col sm:justify-center text-center 
@@ -52,14 +51,7 @@ export default function Home() {
               transforming them into engaging conversational partners.
             </p>
           </div>
-          <Link
-            href="/file-upload"
-            className="select-none mt-8 flex text-sm items-center p-3.5 rounded-lg text-black
-           bg-yellow-500 hover:bg-yellow-400 transition gap-2 font-semibold cursor-pointer"
-          >
-            <Upload className="w-5 h-5" />
-            <p>Upload Document</p>
-          </Link>
+          <UploadFileModal />
           <div className="select-none mt-6 flex flex-col gap-y-4 items-start sm:items-center">
             <p className="text-base text-muted">Supported formats</p>
             <div className="space-x-1">
