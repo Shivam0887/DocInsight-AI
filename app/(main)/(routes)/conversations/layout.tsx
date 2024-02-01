@@ -14,7 +14,7 @@ export default async function ConversationLayout({
 
   return (
     <div className="flex min-h-[calc(100vh-64px)]">
-      <UserFiles />
+      <UserFiles className="hidden xl:block" />
       {children}
     </div>
   );

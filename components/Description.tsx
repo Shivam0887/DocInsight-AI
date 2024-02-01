@@ -14,17 +14,19 @@ import { useState, useEffect } from "react";
 import { trpc } from "@/app/_trpc/client";
 
 const Description = () => {
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const { data } = trpc.getFiles.useQuery({ countOnly: true });
+  const [isRedirecting, setIsRedirecting] = useState<boolean | undefined>(
+    false
+  );
+  const { data } = trpc.getFiles.useQuery();
 
   useEffect(() => {
-    setIsRedirecting(!!data?.files.length);
+    setIsRedirecting(!data?.length);
   }, [data]);
 
   return (
     <MaxWidthWrapper className="pt-14">
-      <div className="bg-white mx-auto lg:w-full lg:max-w-none max-w-max rounded-xl flex flex-col items-center lg:flex-row lg:justify-between gap-y-8 p-8">
-        <div className="flex flex-col items-center lg:flex-row lg:gap-x-4 gap-y-4">
+      <div className="bg-white mx-auto md:w-full md:max-w-none max-w-max rounded-xl two_col_flexbox items-center md:justify-between gap-y-8 md:p-10 p-6">
+        <div className="two_col_flexbox items-center md:gap-x-4 gap-y-4">
           <MessageSquare className="w-16 h-16" />
           <div className="max-w-[350px]">
             <h3 className="text-center lg:text-left text-xl lg:text-2xl font-semibold">
@@ -38,14 +40,14 @@ const Description = () => {
         </div>
         <Link
           href={`/file-upload?new=${isRedirecting}`}
-          className="lg:ml-5 text-xs lg:text-sm font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl py-4 lg:py-5 px-6 lg:px-10 transition"
+          className="md:ml-5 text-center text-xs md:text-sm font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl py-3 md:py-4 px-6 md:px-10 transition"
         >
           Start Conversation
         </Link>
       </div>
 
       <div className="bg-white rounded-lg p-4 mt-28 max-w-[768px] mx-auto">
-        <p className="text-xl font-semibold my-5 mx-auto w-max underline">
+        <p className="text-yellow-600 text-xl font-semibold my-5 mx-auto w-max underline">
           FAQs
         </p>
         <Accordion type="single" collapsible>

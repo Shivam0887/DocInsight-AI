@@ -35,7 +35,7 @@ export default function RootLayout({
       <html lang="en" className="light">
         <body
           className={cn(
-            "min-h-screen font-sans antialiased grainy",
+            "min-h-screen font-sans antialiased grainy scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2",
             poppins.className
           )}
         >

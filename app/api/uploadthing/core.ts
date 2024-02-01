@@ -33,12 +33,14 @@ export const ourFileRouter = {
 
       if (!user) throw new Error("User not found");
 
-      const { key, name, url } = file;
+      const { key, name, url, size } = file;
+
       const dbFile: FileType = await File.create({
         name,
         key,
         url,
-        user: user._id.toString(),
+        size,
+        user: user._id,
         uploadStatus: UploadStatus.PROCESSING,
         docId: randomUUID(),
       });

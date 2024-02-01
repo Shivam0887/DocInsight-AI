@@ -7,63 +7,74 @@ export enum UploadStatus {
   SUCCESS,
 }
 
-export const userSchema = new Schema(
-  {
-    userId: {
-      type: String,
-      unique: true,
-      required: true,
-    },
-    email: {
-      type: String,
-      unique: true,
-      required: true,
-    },
-    files: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "File",
-      },
-    ],
-    stripeCustomerId: String,
-    stripeSubscriptionId: String,
-    stripePriceId: String,
-    stripeCurrentPeriodEnd: Date,
+export const userSchema = new Schema({
+  userId: {
+    type: String,
+    required: true,
   },
-  { timestamps: true }
-);
-
-const fileSchema = new Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    docId: {
-      type: String,
-      unique: true,
-      required: true,
-    },
-    user: {
+  email: {
+    type: String,
+    required: true,
+  },
+  files: [
+    {
       type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: "File",
     },
-    uploadStatus: {
-      type: Number,
-      default: UploadStatus.PENDING,
-    },
-    url: {
-      type: String,
-      required: true,
-    },
-    key: {
-      type: String,
-      required: true,
-    },
+  ],
+  stripeCustomerId: String,
+  stripeSubscriptionId: String,
+  stripePriceId: String,
+  stripeCurrentPeriodEnd: Date,
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
-  { timestamps: true }
-);
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const fileSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  docId: {
+    type: String,
+    required: true,
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  uploadStatus: {
+    type: Number,
+    default: UploadStatus.PENDING,
+  },
+  url: {
+    type: String,
+    required: true,
+  },
+  size: {
+    type: Number,
+    required: true,
+  },
+  key: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
 export type UserType = InferSchemaType<typeof userSchema> & {
   _id: Types.ObjectId;

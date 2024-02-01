@@ -6,30 +6,38 @@ import {
   SheetContent,
   SheetPortal,
 } from "@/components/ui/sheet";
-import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import React from "react";
 
 type Side = "left" | "right" | "top" | "bottom";
 
 export default function Slider({
   children,
   side,
+  triggerElement,
+  triggerClassName,
+  contentClassName,
 }: {
   children: React.ReactNode;
   side: Side;
+  triggerElement: React.JSX.Element;
+  triggerClassName?: string;
+  contentClassName?: string;
 }) {
   return (
     <Sheet>
       <SheetTrigger
         asChild
-        className="flex items-center cursor-pointer min-h-screen "
+        className={cn(
+          "flex items-center cursor-pointer min-h-screen",
+          triggerClassName
+        )}
       >
-        <div>
-          <ChevronRight className="ml-3 p-1 w-6 h-6 fixed stroke-white bg-zinc-800 rounded-full" />
-        </div>
+        <div>{triggerElement}</div>
       </SheetTrigger>
       <SheetPortal>
         <SheetContent
-          className="w-max p-0 border-0 outline-none bg-zinc-950"
+          className={cn("w-max p-0 border-0 outline-none", contentClassName)}
           side={side}
         >
           {children}

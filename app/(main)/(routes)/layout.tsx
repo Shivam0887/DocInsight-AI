@@ -11,19 +11,19 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { userId } = auth();
-  if (!userId) redirect("auth-callback?origin=chat");
+  if (!userId) redirect("/auth-callback?origin=chat");
 
-  connectToDB();
-  const user = await User.findOne<userWithFiles | null>({ userId }).populate({
-    path: "files",
-    model: File,
-  });
+  try {
+    connectToDB();
+    const user = await User.findOne<userWithFiles | null>({ userId }).populate({
+      path: "files",
+      model: File,
+    });
 
-  if (!user) throw new Error("User not found");
+    if (!user) throw new Error("User not found");
+  } catch (error: any) {
+    console.log(error.message);
+  }
 
-  return (
-    <div>
-      <div>{children}</div>
-    </div>
-  );
+  return <div>{children}</div>;
 }

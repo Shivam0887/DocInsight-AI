@@ -20,7 +20,7 @@ const UploadFile = ({ className }: { className?: string }) => {
   if (fileInfo.fileId) {
     setTimeout(() => {
       router.push(`/conversations/${fileInfo.fileId}`);
-    }, 500);
+    }, 100);
   }
 
   return (

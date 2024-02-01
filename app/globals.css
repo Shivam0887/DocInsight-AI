@@ -88,3 +88,14 @@
   transform: translateY(0px);
   opacity: 1;
 }
+
+.two_col_flexbox {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .two_col_flexbox {
+    flex-direction: row;
+  }
+}

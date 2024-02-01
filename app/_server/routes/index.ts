@@ -13,8 +13,6 @@ import {
 import { randomUUID } from "crypto";
 import { UTApi } from "uploadthing/server";
 
-type userWithFilesType = Omit<UserType, "files"> & { files: FileType[] };
-
 const utapi = new UTApi();
 
 export const authCallback = publicProcedure.query(async () => {
@@ -24,9 +22,9 @@ export const authCallback = publicProcedure.query(async () => {
 
   try {
     connectToDB();
-    const dbUser = await User.findOne<UserType>({ userId: currUser.id });
+    const dbUser = await User.findOne<UserType | null>({ userId: currUser.id });
 
-    if (!dbUser?.userId) {
+    if (!dbUser) {
       await User.create({
         userId: currUser.id,
         email: currUser.emailAddresses[0].emailAddress,
@@ -40,27 +38,68 @@ export const authCallback = publicProcedure.query(async () => {
   }
 });
 
-export const getFiles = privateProcedure
-  .input(z.object({ countOnly: z.boolean().optional().default(false) }))
+export const getFiles = privateProcedure.query(async ({ ctx }) => {
+  const { userId } = ctx;
+
+  connectToDB();
+  const user = await User.findOne<UserType | null>({ userId });
+  if (!user) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+  const userFiles = await File.find<FileType>({ user: user._id }).sort({
+    createdAt: "desc",
+  });
+
+  return userFiles;
+});
+
+export const getFile = privateProcedure
+  .input(z.object({ fileId: z.string() }))
   .query(async ({ ctx, input }) => {
     const { userId } = ctx;
 
     connectToDB();
-    const dbUser = await User.findOne<UserType | null>({ userId });
-    if (!dbUser) throw new TRPCError({ code: "UNAUTHORIZED" });
+    const user = await User.findOne<UserType | null>({ userId });
+    if (!user) throw new TRPCError({ code: "UNAUTHORIZED" });
 
-    if (input.countOnly) {
-      return dbUser;
-    }
-
-    const userFiles = await User.findOne<userWithFilesType | null>({
-      userId,
-    }).populate({
-      path: "files",
-      model: File,
+    const userFile = await File.findOne<FileType>({
+      _id: input.fileId,
+      user: user._id,
     });
 
-    return userFiles;
+    if (!userFile) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+
+    return userFile;
+  });
+
+export const deleteFile = privateProcedure
+  .input(z.object({ fileId: z.string(), docId: z.string() }))
+  .mutation(async ({ ctx, input }) => {
+    const { userId } = ctx;
+
+    connectToDB();
+    const user = await User.findOne<UserType | null>({ userId });
+    if (!user) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+    const userFile = await File.findOneAndDelete<FileType | null>(
+      {
+        _id: input.fileId,
+        user: user._id,
+        docId: input.docId,
+      },
+      { new: true }
+    );
+
+    if (!userFile) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+
+    await User.findByIdAndUpdate(user._id, {
+      $pull: {
+        files: userFile._id,
+      },
+    });
   });
 
 export const uploadFileFromUrl = privateProcedure
@@ -76,11 +115,12 @@ export const uploadFileFromUrl = privateProcedure
     let dbFile: FileType | null = null;
 
     if (data) {
-      const { key, name, url } = data;
+      const { key, name, url, size } = data;
       dbFile = await File.create({
         name,
         key,
         url,
+        size,
         user: user._id,
         uploadStatus: UploadStatus.PROCESSING,
         docId: randomUUID(),

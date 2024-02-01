@@ -2,6 +2,8 @@ import { router } from "./trpc";
 import {
   authCallback,
   getFiles,
+  getFile,
+  deleteFile,
   uploadFileFromUrl,
 } from "@/app/_server/routes";
 
@@ -9,6 +11,8 @@ import {
 export const appRouter = router({
   authCallback,
   getFiles,
+  getFile,
+  deleteFile,
   uploadFileFromUrl,
 });
 
