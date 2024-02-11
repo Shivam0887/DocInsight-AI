@@ -20,9 +20,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
-        {children} <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </trpc.Provider>
   );
 };

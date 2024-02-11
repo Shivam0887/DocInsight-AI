@@ -20,22 +20,19 @@ const ConversationPage = async ({ params }: { params: { fileId: string } }) => {
   if (!file) notFound();
 
   return (
-    <div className="flex-1 justify-between flex flex-col h-[calc(100vh-64px)]">
-      <div className="mx-auto w-full max-w-8xl grow lg:flex">
+    <div className="flex-1 justify-between flex flex-col h-[calc(100vh-4rem)]">
+      <div className="mx-auto w-full max-w-8xl grow lg:flex h-full">
         {/* left side */}
 
         <div className="flex-1 xl:flex">
-          <div className="px-4 pt-6 xl:flex-1">
+          <div className="px-2 lg:px-4 pt-4 xl:flex-1">
             <DocumentRenderer url={file.url} />
           </div>
         </div>
 
         {/* right side */}
-        <div
-          className="shrink-0 flex-[0.75] border-t border-gray-200
-          lg:w-96 lg:border-l lg:border-t-0"
-        >
-          <ChatWrapper />
+        <div className="shrink-0 flex-[0.75] px-1 lg:px-0 border-t border-gray-200 lg:border-t-0 h-[calc(100%-44px)] lg:h-full">
+          <ChatWrapper fileId={file._id.toString()} />
         </div>
       </div>
     </div>

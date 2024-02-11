@@ -3,16 +3,12 @@
 import { FileType } from "@/lib/models/models";
 import { cn } from "@/lib/utils";
 import { File } from "lucide-react";
-import Link from "next/link";
 
 type UploadedFileItemProps = Omit<
   FileType,
-  "user" | "_id" | "createdAt" | "updatedAt"
+  "user" | "_id" | "createdAt" | "updatedAt" | "messages"
 > & {
-  user: string;
   _id: string;
-  createdAt: string;
-  updatedAt: string;
 };
 
 const UploadedFileItem = ({

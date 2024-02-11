@@ -1,10 +1,10 @@
 import { Schema, model, models, InferSchemaType, Types } from "mongoose";
 
 export enum UploadStatus {
-  PENDING,
-  PROCESSING,
-  FAILED,
-  SUCCESS,
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  FAILED = "FAILED",
+  SUCCESS = "SUCCESS",
 }
 
 export const userSchema = new Schema({
@@ -20,6 +20,12 @@ export const userSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: "File",
+    },
+  ],
+  messages: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Message",
     },
   ],
   stripeCustomerId: String,
@@ -50,9 +56,19 @@ const fileSchema = new Schema({
     ref: "User",
     required: true,
   },
+  messages: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Message",
+    },
+  ],
   uploadStatus: {
-    type: Number,
+    type: String,
     default: UploadStatus.PENDING,
+  },
+  pages: {
+    type: Number,
+    default: 1,
   },
   url: {
     type: String,
@@ -76,6 +92,35 @@ const fileSchema = new Schema({
   },
 });
 
+const messageSchema = new Schema({
+  content: {
+    type: String,
+    required: true,
+  },
+  fileId: {
+    type: Schema.Types.ObjectId,
+    ref: "File",
+    required: true,
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
+  chatGptId: String, //if chatGpt sends a reply
+  isUserMessage: {
+    type: Boolean,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 export type UserType = InferSchemaType<typeof userSchema> & {
   _id: Types.ObjectId;
 };
@@ -84,5 +129,11 @@ export type FileType = InferSchemaType<typeof fileSchema> & {
   _id: Types.ObjectId;
 };
 
-export const User = models?.User || model<UserType>("User", userSchema);
-export const File = models?.File || model<FileType>("File", fileSchema);
+export type MessageType = InferSchemaType<typeof messageSchema> & {
+  _id: Types.ObjectId;
+};
+
+export const User = models.User || model<UserType>("User", userSchema);
+export const File = models.File || model<FileType>("File", fileSchema);
+export const Message =
+  models.Message<MessageType> || model<MessageType>("Message", messageSchema);

@@ -7,7 +7,7 @@ import {
   SheetPortal,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type Side = "left" | "right" | "top" | "bottom";
 
@@ -24,8 +24,23 @@ export default function Slider({
   triggerClassName?: string;
   contentClassName?: string;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return <></>;
+
+  let onClose = localStorage.getItem("modalClose");
+  if (isOpen && onClose === "false") {
+    localStorage.setItem("modalClose", "true");
+    setIsOpen(false);
+  }
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger
         asChild
         className={cn(

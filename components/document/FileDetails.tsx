@@ -18,6 +18,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Month = [
   "January",
@@ -36,12 +37,21 @@ const Month = [
 
 const FileDetails = ({ fileId }: { fileId: string }) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data, isPending } = trpc.getFile.useQuery({ fileId });
   const [isCopied, setIsCopied] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [docId, setDocId] = useState("");
   const { mutate, isError, error } = trpc.deleteFile.useMutation({
     onSuccess: () => {
-      router.push("/conversations");
+      queryClient.invalidateQueries({
+        queryKey: [["getFiles"], { type: "query" }],
+      });
+      localStorage.setItem("modalClose", "false");
+      setIsOpen(false);
+      setTimeout(() => {
+        router.push("/conversations");
+      }, 500);
     },
   });
 
@@ -93,6 +103,9 @@ const FileDetails = ({ fileId }: { fileId: string }) => {
               <p className="mt-4 font-medium text-base">
                 Uploaded: <span className="font-normal">{uploadDate}</span>
               </p>
+              <p className="mt-4 font-medium text-base">
+                Pages: <span className="font-normal">{data?.pages}</span>
+              </p>
 
               {/* after chatting with document */}
               <p className="mt-4">Document overview</p>
@@ -106,7 +119,7 @@ const FileDetails = ({ fileId }: { fileId: string }) => {
                 <MessageSquare className="h-4 w-4" />
                 <p className="font-medium text-sm">new chat</p>
               </Link>
-              <Dialog>
+              <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                   <div className="flex grow gap-3 items-center justify-center bg-red-500 text-white rounded-lg hover:bg-red-400 transition py-3 px-6 cursor-pointer">
                     <Trash className="stroke-white h-4 w-4" />

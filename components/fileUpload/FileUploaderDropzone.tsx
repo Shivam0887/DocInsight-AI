@@ -27,8 +27,7 @@ export function FileUploaderDropzone({
     "FileUploader",
     {
       onClientUploadComplete(res) {
-        const { fileId } = res[0].serverData;
-        setFileInfo({ fileId });
+        setFileInfo({ fileId: res?.[0].serverData?.fileId ?? "" });
       },
       onUploadError: (error) => {
         console.log(error.message);

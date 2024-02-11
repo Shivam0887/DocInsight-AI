@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useResizeDetector } from "react-resize-detector";
 import { useForm } from "react-hook-form";
@@ -42,6 +42,7 @@ const DocumentRenderer = ({ url }: DocumentRendererProps) => {
   const [isMounted, setIsMounded] = useState(false);
 
   const [numPages, setNumPages] = useState<number>(1);
+  const [prevPage, setPrevPage] = useState<number>(1);
   const [curPage, setCurPage] = useState<number>(1);
   const [onError, setOnError] = useState<Error>();
 
@@ -51,7 +52,11 @@ const DocumentRenderer = ({ url }: DocumentRendererProps) => {
 
   const isLoading = renderedScale !== scale;
 
-  const { ref, width: wrapperWidth } = useResizeDetector();
+  const {
+    ref,
+    width: wrapperWidth,
+    height: wrapperHeight,
+  } = useResizeDetector();
 
   const PageValidatorSchema = z.object({
     page: z
@@ -89,7 +94,9 @@ const DocumentRenderer = ({ url }: DocumentRendererProps) => {
           <div
             className={cn(
               "mb-4 w-full self-start bg-white rounded-md shadow flex flex-col items-center  transition-transform duration-300",
-              isOpen ? "lg:translate-x-[0%]" : "hidden lg:-translate-x-[100%] "
+              isOpen
+                ? "lg:translate-y-[0%]"
+                : "hidden lg:flex -translate-y-[100%] lg:translate-y-[0%]"
             )}
           >
             {/* top-bar */}
@@ -102,6 +109,7 @@ const DocumentRenderer = ({ url }: DocumentRendererProps) => {
                   aria-label="previous page"
                   className="hover:bg-zinc-100 rounded-md p-1"
                   onClick={() => {
+                    setPrevPage(curPage);
                     setCurPage((prev) => (prev - 1 > 0 ? prev - 1 : 1));
                     setValue("page", String(curPage - 1));
                   }}
@@ -133,6 +141,7 @@ const DocumentRenderer = ({ url }: DocumentRendererProps) => {
                   aria-label="next page"
                   className="hover:bg-zinc-100 rounded-md p-1"
                   onClick={() => {
+                    setPrevPage(curPage);
                     setCurPage((prev) =>
                       prev + 1 <= numPages ? prev + 1 : numPages
                     );
@@ -191,7 +200,7 @@ const DocumentRenderer = ({ url }: DocumentRendererProps) => {
             </div>
 
             {/* pdf renderer */}
-            <div className="flex-1 w-full max-h-[78vh] overflow-y-scroll scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2">
+            <div className="flex-1 w-full max-h-[80vh] overflow-y-scroll scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2">
               <SimpleBar
                 autoHide={false}
                 forceVisible="x"
@@ -202,7 +211,7 @@ const DocumentRenderer = ({ url }: DocumentRendererProps) => {
                     file={url}
                     onLoadSuccess={({ numPages }) => setNumPages(numPages)}
                     loading={
-                      <div className="flex justify-center">
+                      <div className="flex justify-center h-full">
                         <Loader2 className="my-24 h-6 w-6 animate-spin" />
                       </div>
                     }
