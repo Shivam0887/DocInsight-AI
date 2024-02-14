@@ -5,8 +5,12 @@ import { AnimateOnScroll, MoveToTop } from "@/lib/animateOnScroll";
 import Navbar from "@/components/Navigation/Navbar";
 import { UserButton } from "@clerk/nextjs";
 import UploadFileModal from "@/components/models/UploadFile.model";
+import UploadFile from "@/components/fileUpload/UploadFile";
+import { Upload } from "lucide-react";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
-export default function Home() {
+export default async function Home() {
+  const { isSubscribed } = await getUserSubscriptionPlan();
   return (
     <div>
       <Navbar />
@@ -51,15 +55,20 @@ export default function Home() {
               transforming them into engaging conversational partners.
             </p>
           </div>
-          <UploadFileModal />
+          <UploadFileModal isSubscribed={isSubscribed}>
+            <button
+              className="select-none mt-8 flex text-sm items-center p-3.5 rounded-lg text-black
+           bg-yellow-500 hover:bg-yellow-400 transition gap-2 font-semibold cursor-pointer"
+            >
+              <Upload className="w-5 h-5" />
+              <p>Upload Document</p>
+            </button>
+          </UploadFileModal>
           <div className="select-none mt-6 flex flex-col gap-y-4 items-start sm:items-center">
             <p className="text-base text-muted">Supported formats</p>
             <div className="space-x-1">
               <span className="px-2 p-1.5 bg-zinc-800 text-zinc-400 rounded-lg font-medium text-[12px] text-muted">
                 PDF
-              </span>
-              <span className="px-2 py-1.5 bg-zinc-800 text-zinc-400 rounded-lg font-medium text-[12px] text-muted">
-                TXT
               </span>
             </div>
           </div>
@@ -92,7 +101,7 @@ export default function Home() {
               alt="product-preview"
               quality={100}
             />
-            <div className="w-full h-full absolute top-0 bg-gradient-to-r from-transparent from-30% to-[#f8f9ff]" />
+            <div className="w-full h-full absolute top-0 bg-gradient-to-r from-transparent from-75% to-[#f8f9ff]" />
           </div>
 
           <div className="flex flex-col flex-1 items-start gap-y-5">

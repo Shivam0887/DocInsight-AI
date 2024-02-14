@@ -1,8 +1,9 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import UploadFile from "@/components/fileUpload/UploadFile";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { redirect } from "next/navigation";
 
-const UploadFilePage = ({
+const UploadFilePage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -12,6 +13,8 @@ const UploadFilePage = ({
   if (!isRedirecting) {
     redirect("/conversations");
   }
+
+  const subscriptionPlan = await getUserSubscriptionPlan();
 
   return (
     <MaxWidthWrapper className="py-16 px-8 xs:px-10 sm:px-12">
@@ -25,14 +28,14 @@ const UploadFilePage = ({
               </div>
             </h2>
 
-            <p className="text-[12.5px] text-zinc-900 max-w-96 text-center md:text-left leading-loose font-medium">
+            <p className="text-sm text-zinc-900 max-w-96 text-center md:text-left leading-loose font-medium">
               You&apos;ll be able to start a conversation based on the document
               uploaded. You can upgrade your account to increase your limits
             </p>
           </div>
         </div>
         <div className="w-full h-[1px] bg-zinc-300" />
-        <UploadFile />
+        <UploadFile isSubscribed={subscriptionPlan.isSubscribed} />
       </div>
     </MaxWidthWrapper>
   );

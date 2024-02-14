@@ -9,6 +9,8 @@ import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 
 const ChatWrapper = ({ fileId }: { fileId: string }) => {
+  const { data: file } = trpc.getFile.useQuery({ fileId });
+  const { mutate } = trpc.deleteFile.useMutation();
   const { data, isLoading } = trpc.getFileUploadStatus.useQuery(
     { fileId },
     {
@@ -52,6 +54,7 @@ const ChatWrapper = ({ fileId }: { fileId: string }) => {
   }
 
   if (data?.status === "FAILED") {
+    mutate({ docId: file?.docId ?? "" });
     return (
       <div className="relative min-h-full rounded-lg shadow-md bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
         <div className="flex-1 flex justify-center items-center flex-col mb-28">

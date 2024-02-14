@@ -7,6 +7,8 @@ import {
   deleteFile,
   uploadFileFromUrl,
   getFileMessages,
+  createStripeSession,
+  deleteChat,
 } from "@/app/_server/routes";
 
 //Creating appRouter instance
@@ -18,6 +20,8 @@ export const appRouter = router({
   deleteFile,
   uploadFileFromUrl,
   getFileMessages,
+  createStripeSession,
+  deleteChat,
 });
 
 export type AppRouter = typeof appRouter;

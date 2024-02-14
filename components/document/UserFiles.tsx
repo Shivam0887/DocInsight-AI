@@ -37,9 +37,9 @@ const UserFiles = ({ className }: { className?: string }) => {
       </div>
       <Link
         href="/file-upload?new=true"
-        className="w-full block my-4 text-center rounded-lg py-2 px-4 text-white text-sm bg-zinc-950 hover:bg-zinc-900 transition"
+        className="w-full block my-4 text-center rounded-lg p-3 text-white text-sm bg-zinc-950 hover:bg-zinc-900 transition"
       >
-        New Conversation
+        +New Conversation
       </Link>
       {isSelected ? <UploadedFiles /> : <ConversationFiles />}
     </div>

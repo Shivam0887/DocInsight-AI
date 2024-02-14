@@ -12,19 +12,20 @@ type FileUploaderProps = {
   setProgress: (p: number) => void;
   setFileName: (f: string) => void;
   setFileInfo: (info: { fileId: string }) => void;
+  isSubscribed: boolean;
 };
 
 export function FileUploaderDropzone({
   setFileName,
   setProgress,
   setFileInfo,
+  isSubscribed,
 }: FileUploaderProps) {
   const [isDropped, setIsDropped] = useState(false);
-  const [fileSize, setFileSize] = useState(0);
   const [files, setFiles] = useState<File[]>([]);
 
   const { startUpload, permittedFileInfo, isUploading } = useUploadThing(
-    "FileUploader",
+    isSubscribed ? "proPlanFileUploader" : "freePlanFileUploader",
     {
       onClientUploadComplete(res) {
         setFileInfo({ fileId: res?.[0].serverData?.fileId ?? "" });
@@ -39,17 +40,12 @@ export function FileUploaderDropzone({
   );
 
   const onDrop = async (acceptedFiles: File[]) => {
-    const size = acceptedFiles.length
-      ? Math.round(acceptedFiles[0].size / 1024 / 1024)
-      : 0;
     setIsDropped(true);
     setFiles(acceptedFiles);
-    if (acceptedFiles.length && size <= 4) {
+    if (acceptedFiles.length) {
       setFileName(acceptedFiles[0].name);
       await startUpload(acceptedFiles);
     }
-
-    setFileSize(size);
   };
 
   const fileTypes = permittedFileInfo?.config
@@ -78,18 +74,14 @@ export function FileUploaderDropzone({
           </p>
 
           <p className="text-zinc-400 text-[10px] sm:text-xs">
-            Supported formats: &apos;.pdf&apos; , &apos;.txt&apos;
+            Maxsize: {isSubscribed ? 16 : 4}MB
           </p>
-          <p className="text-zinc-400 text-[10px] sm:text-xs">Maxsize: 4MB</p>
         </div>
       </div>
       {isDropped && !files.length && (
         <p className="text-red-600 mt-4 text-sm text-center">
           Invalid File Format
         </p>
-      )}
-      {isDropped && (fileSize > 4 || fileSize > 16) && (
-        <p className="text-red-600 mt-4 text-sm text-center">Too large</p>
       )}
     </>
   );

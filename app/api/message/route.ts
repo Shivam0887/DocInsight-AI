@@ -127,11 +127,23 @@ export async function POST(req: NextRequest) {
     const stream = GoogleGenerativeAIStream(response, {
       async onCompletion(completion) {
         // console.log(completion);
-        await Message.create({
+        const res = await Message.create({
           content: completion,
           isUserMessage: false,
           userId: user._id,
           fileId: file._id,
+        });
+
+        await File.findByIdAndUpdate(file._id, {
+          $push: {
+            messages: res?._id,
+          },
+        });
+
+        await Message.findByIdAndUpdate(res?._id, {
+          $set: {
+            fileId: file._id,
+          },
         });
       },
     });

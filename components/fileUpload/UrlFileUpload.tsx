@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { trpc } from "@/app/_trpc/client";
 import { Check, Loader2 } from "lucide-react";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 type UrlFileUploadProps = {
-  setFileInfo: (info: { fileId: string; docId: string }) => void;
+  setFileInfo: (info: { fileId: string }) => void;
 };
 
 const urlRegex =
@@ -20,7 +21,8 @@ const UrlFileUpload = ({ setFileInfo }: UrlFileUploadProps) => {
 
   useEffect(() => {
     if (data) {
-      setFileInfo(data);
+      const { fileId } = data;
+      setFileInfo({ fileId });
     }
   }, [data, setFileInfo]);
 
@@ -76,7 +78,7 @@ const UrlFileUpload = ({ setFileInfo }: UrlFileUploadProps) => {
           Get document
         </button>
         {isClicked ? (
-          data?.docId && data?.fileId ? (
+          data?.fileId ? (
             <Check className="w-5 h-5 stroke-white bg-emerald-500 rounded-full p-1" />
           ) : (
             <Loader2 className="w-5 h-5 animate-spin" />

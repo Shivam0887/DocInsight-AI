@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { SignOutButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import {
@@ -15,8 +16,9 @@ import {
 
 import { ActionTooltip } from "../ActionToolTip";
 import { cn } from "@/lib/utils";
+import UploadFileModal from "../models/UploadFile.model";
 
-const SideNavbar = () => {
+const SideNavbar = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const pathName = usePathname().split("/")[1];
 
   return (
@@ -45,15 +47,9 @@ const SideNavbar = () => {
           </Link>
         </ActionTooltip>
         <ActionTooltip side="left" align="center" label="upload doc">
-          <Link
-            href="/upload"
-            className={cn(
-              "hover:bg-zinc-800 transition p-1.5 rounded-md",
-              pathName === "upload" && "bg-zinc-800"
-            )}
-          >
+          <UploadFileModal onlyDropdown isSubscribed={isSubscribed}>
             <UploadCloud className="w-5 h-5 sm:w-6 sm:h-6 stroke-white" />
-          </Link>
+          </UploadFileModal>
         </ActionTooltip>
         <ActionTooltip side="left" align="center" label="delete doc">
           <Link
@@ -67,7 +63,9 @@ const SideNavbar = () => {
           </Link>
         </ActionTooltip>
         <ActionTooltip side="left" align="center" label="settings">
-          <Settings className="box-content w-4 h-4 sm:w-6 sm:h-6 stroke-white hover:bg-zinc-800 transition p-1.5 rounded-md" />
+          <Link href="/settings">
+            <Settings className="box-content w-4 h-4 sm:w-6 sm:h-6 stroke-white hover:bg-zinc-800 transition p-1.5 rounded-md" />
+          </Link>
         </ActionTooltip>
         <ActionTooltip side="left" align="center" label="profile">
           <div>
@@ -81,7 +79,13 @@ const SideNavbar = () => {
           </div>
         </ActionTooltip>
         <ActionTooltip side="left" align="center" label="logout">
-          <LogOut className="box-content w-5 h-5 sm:w-6 sm:h-6 stroke-white hover:bg-zinc-800 transition p-1.5 rounded-md" />
+          <SignOutButton
+            signOutCallback={() => {
+              window.location.href = "/sign-in";
+            }}
+          >
+            <LogOut className="box-content w-5 h-5 sm:w-6 sm:h-6 stroke-white hover:bg-zinc-800 transition p-1.5 rounded-md" />
+          </SignOutButton>
         </ActionTooltip>
       </div>
     </div>

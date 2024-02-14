@@ -42,7 +42,11 @@ const FileDetails = ({ fileId }: { fileId: string }) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [docId, setDocId] = useState("");
-  const { mutate, isError, error } = trpc.deleteFile.useMutation({
+  const {
+    mutate: deleteFile,
+    isError,
+    error,
+  } = trpc.deleteFile.useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [["getFiles"], { type: "query" }],
@@ -54,6 +58,8 @@ const FileDetails = ({ fileId }: { fileId: string }) => {
       }, 500);
     },
   });
+
+  const { mutate: deleteChat } = trpc.deleteChat.useMutation();
 
   const handleClick = async () => {
     await window.navigator.clipboard.writeText(data?.docId as string);
@@ -87,15 +93,15 @@ const FileDetails = ({ fileId }: { fileId: string }) => {
                 <File className="w-8 h-8" />
                 <h1 className="text-xl font-semibold">{data?.name}</h1>
               </div>
-              <div className="flex gap-1 mt-6 items-center">
+              <div className="flex flex-wrap gap-2 mt-6 items-center max-w-xs">
                 <p className="font-medium text-base">
                   ID: <span className="font-normal">{data?.docId}</span>
                 </p>
                 {isCopied ? (
-                  <CheckCircle className="w-6 h-6 stroke-emerald-600" />
+                  <CheckCircle className="w-4 h-4 stroke-emerald-600" />
                 ) : (
                   <Copy
-                    className="w-6 h-6 cursor-pointer stroke-yellow-600 rotate-90"
+                    className="w-4 h-4 cursor-pointer stroke-yellow-600 rotate-90"
                     onClick={handleClick}
                   />
                 )}
@@ -104,11 +110,11 @@ const FileDetails = ({ fileId }: { fileId: string }) => {
                 Uploaded: <span className="font-normal">{uploadDate}</span>
               </p>
               <p className="mt-4 font-medium text-base">
-                Pages: <span className="font-normal">{data?.pages}</span>
+                Pages: <span className="font-normal">{data?.pages ?? 1}</span>
               </p>
 
               {/* after chatting with document */}
-              <p className="mt-4">Document overview</p>
+              <p className="mt-4">{data?.summary ?? ""}</p>
             </div>
 
             <div className="flex w-full gap-2 mt-6 max-w-80">
@@ -148,7 +154,10 @@ const FileDetails = ({ fileId }: { fileId: string }) => {
                       </DialogClose>
                       <button
                         type="button"
-                        onClick={() => mutate({ docId, fileId })}
+                        onClick={() => {
+                          deleteFile({ docId });
+                          deleteChat({ fileId });
+                        }}
                         className="text-sm bg-red-500 text-white rounded-lg hover:bg-red-400 transition py-3 px-4"
                       >
                         Delete

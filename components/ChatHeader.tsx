@@ -1,6 +1,13 @@
+"use client";
+import { trpc } from "@/app/_trpc/client";
 import Link from "next/link";
 
-const ChatHeader = () => {
+const ChatHeader = ({ plan }: { plan: string }) => {
+  const { mutate } = trpc.createStripeSession.useMutation({
+    onSuccess({ url }) {
+      window.location.href = url ?? "/conversations/billing";
+    },
+  });
   return (
     <div className="w-full">
       <div className="h-16 bg-white flex items-center justify-between">
@@ -9,11 +16,11 @@ const ChatHeader = () => {
             DocInsight-AI
           </Link>
           <span className="bg-green-50 text-[10px] font-medium text-green-700 py-[2px] px-2 rounded-xl">
-            Free
+            {plan}
           </span>
         </div>
         <Link
-          href="/#"
+          href="/conversations/pricing"
           className="mr-10 capitalize text-xs sm:text-sm font-medium px-5 py-2 sm:px-8 sm:py-3 text-yellow-500 bg-zinc-900 rounded-xl hover:bg-zinc-800 transition"
         >
           upgrade

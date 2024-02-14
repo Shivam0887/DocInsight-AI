@@ -62,6 +62,7 @@ const fileSchema = new Schema({
       ref: "Message",
     },
   ],
+  summary: String,
   uploadStatus: {
     type: String,
     default: UploadStatus.PENDING,
@@ -106,7 +107,6 @@ const messageSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  chatGptId: String, //if chatGpt sends a reply
   isUserMessage: {
     type: Boolean,
     required: true,

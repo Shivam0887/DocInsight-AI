@@ -8,7 +8,15 @@ import { File, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import UrlFileUpload from "./UrlFileUpload";
 
-const UploadFile = ({ className }: { className?: string }) => {
+const UploadFile = ({
+  className,
+  isSubscribed,
+  onlyDropdown,
+}: {
+  className?: string;
+  isSubscribed: boolean;
+  onlyDropdown?: boolean;
+}) => {
   const [isSelect, setIsSelect] = useState(false);
   const [progress, setProgress] = useState(0);
   const [fileName, setFileName] = useState<string>("");
@@ -36,20 +44,22 @@ const UploadFile = ({ className }: { className?: string }) => {
         >
           upload document
         </button>
-        <button
-          className={`py-3 px-4 ${
-            isSelect
-              ? "bg-white rounded-[20px] shadow-md text-black"
-              : "text-zinc-500"
-          } text-xs capitalize font-semibold`}
-          onClick={() => setIsSelect(true)}
-        >
-          upload from <span className="uppercase">url</span>
-        </button>
+        {!onlyDropdown && (
+          <button
+            className={`py-3 px-4 ${
+              isSelect
+                ? "bg-white rounded-[20px] shadow-md text-black"
+                : "text-zinc-500"
+            } text-xs capitalize font-semibold`}
+            onClick={() => setIsSelect(true)}
+          >
+            upload from <span className="uppercase">url</span>
+          </button>
+        )}
       </div>
       <div>
         {!fileName ? (
-          isSelect ? (
+          isSelect && !onlyDropdown ? (
             // Upload the file using file url
             <UrlFileUpload setFileInfo={setFileInfo} />
           ) : (
@@ -57,6 +67,7 @@ const UploadFile = ({ className }: { className?: string }) => {
               setProgress={setProgress}
               setFileName={setFileName}
               setFileInfo={setFileInfo}
+              isSubscribed={isSubscribed}
             />
           )
         ) : (

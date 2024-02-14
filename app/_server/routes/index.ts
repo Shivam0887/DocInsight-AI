@@ -20,6 +20,11 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { PineconeStore } from "@langchain/pinecone";
 import { pineconeIndex } from "@/lib/pinecone";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
+import { absoluteUrl } from "@/lib/utils";
+import { PLANS } from "@/config/stripe";
+import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
+import { genAI } from "@/lib/ai";
+import { ObjectId, Types } from "mongoose";
 
 const utapi = new UTApi();
 
@@ -84,7 +89,11 @@ export const getFileUploadStatus = privateProcedure
   });
 
 export const getFile = privateProcedure
-  .input(z.object({ fileId: z.string() }))
+  .input(
+    z.object({
+      fileId: z.string(),
+    })
+  )
   .query(async ({ ctx, input }) => {
     const { userId } = ctx;
 
@@ -105,7 +114,11 @@ export const getFile = privateProcedure
   });
 
 export const deleteFile = privateProcedure
-  .input(z.object({ fileId: z.string(), docId: z.string() }))
+  .input(
+    z.object({
+      docId: z.string(),
+    })
+  )
   .mutation(async ({ ctx, input }) => {
     const { userId } = ctx;
 
@@ -115,7 +128,6 @@ export const deleteFile = privateProcedure
 
     const userFile = await File.findOneAndDelete<FileType | null>(
       {
-        _id: input.fileId,
         user: user._id,
         docId: input.docId,
       },
@@ -134,7 +146,11 @@ export const deleteFile = privateProcedure
   });
 
 export const uploadFileFromUrl = privateProcedure
-  .input(z.object({ securedUrl: z.string() }))
+  .input(
+    z.object({
+      securedUrl: z.string(),
+    })
+  )
   .mutation(async ({ ctx, input }) => {
     const user = await User.findOne<UserType | null>({ userId: ctx.userId });
     if (!user) throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -164,29 +180,58 @@ export const uploadFileFromUrl = privateProcedure
 
       const pages = docs.length;
 
-      // vector embedding
-      const genEmbeddings = new OpenAIEmbeddings({
-        openAIApiKey: process.env.OPENAI_API_KEY,
-        modelName: "text-embedding-3-small",
-      });
+      const { isSubscribed } = await getUserSubscriptionPlan();
 
-      await PineconeStore.fromDocuments(docs, genEmbeddings, {
-        pineconeIndex,
-        namespace: dbFile._id.toString(),
-      });
+      const isProExceeded =
+        pages > PLANS.find((plan) => plan.name === "Pro")!.pagesPerPDF;
+      const isFreeExceeded =
+        pages > PLANS.find((plan) => plan.name === "Free")!.pagesPerPDF;
 
-      await File.findByIdAndUpdate(dbFile._id, {
-        $set: {
-          uploadStatus: UploadStatus.SUCCESS,
-          pages,
-        },
-      });
+      if (
+        (isSubscribed && isProExceeded) ||
+        (!isSubscribed && isFreeExceeded)
+      ) {
+        await File.findByIdAndUpdate(dbFile._id, {
+          $set: {
+            uploadStatus: UploadStatus.FAILED,
+            pages,
+          },
+        });
+      } else {
+        // vector embedding
+        const genEmbeddings = new OpenAIEmbeddings({
+          openAIApiKey: process.env.OPENAI_API_KEY,
+          modelName: "text-embedding-3-small",
+        });
 
-      await User.findByIdAndUpdate(user._id, {
-        $push: {
-          files: dbFile._id,
-        },
-      });
+        const model = genAI.getGenerativeModel({
+          model: "gemini-pro",
+        });
+
+        const prompt = `${docs[0].pageContent}\n\n Generate the summary of the provided content within 50 words.`;
+
+        const genSummary = await model.generateContent(prompt);
+        const summary = genSummary.response.text();
+
+        await PineconeStore.fromDocuments(docs, genEmbeddings, {
+          pineconeIndex,
+          namespace: dbFile._id.toString(),
+        });
+
+        await File.findByIdAndUpdate(dbFile._id, {
+          $set: {
+            uploadStatus: UploadStatus.SUCCESS,
+            pages,
+            summary,
+          },
+        });
+
+        await User.findByIdAndUpdate(user._id, {
+          $push: {
+            files: dbFile._id,
+          },
+        });
+      }
 
       return {
         userId: ctx.userId,
@@ -243,4 +288,87 @@ export const getFileMessages = privateProcedure
       messages,
       nextCursor,
     };
+  });
+
+export const createStripeSession = privateProcedure.mutation(
+  async ({ ctx }) => {
+    const { userId } = ctx;
+
+    // where to redirect the user in case of the success or failure
+    const billingUrl = absoluteUrl("/settings");
+
+    const user = await User.findOne<UserType | null | undefined>({ userId });
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+    const subscriptionPlan = await getUserSubscriptionPlan();
+
+    if (subscriptionPlan.isSubscribed && user.stripeCustomerId) {
+      const stripeSession = await stripe.billingPortal.sessions.create({
+        customer: user.stripeCustomerId,
+        return_url: billingUrl,
+      });
+
+      return { url: stripeSession.url };
+    }
+
+    const stripeSession = await stripe.checkout.sessions.create({
+      success_url: billingUrl,
+      cancel_url: billingUrl,
+      payment_method_types: ["card"],
+      mode: "subscription",
+      billing_address_collection: "auto",
+      line_items: [
+        {
+          price: PLANS.find((plan) => plan.name === "Pro")?.price.priceIds.test,
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        userId,
+      },
+    });
+
+    return { url: stripeSession.url };
+  }
+);
+
+export const deleteChat = privateProcedure
+  .input(
+    z.object({
+      fileId: z.string(),
+    })
+  )
+  .mutation(async ({ ctx, input }) => {
+    const { fileId } = input;
+    connectToDB();
+
+    const user = await User.findOne<UserType>({ userId: ctx.userId });
+
+    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+    const fileMessages = (await File.findOne<{ messages: ObjectId[] }>(
+      { _id: fileId, user: user._id },
+      { _id: 0, messages: 1 }
+    )) ?? { messages: [new Types.ObjectId()] };
+
+    const fileIds = fileMessages.messages.map(
+      (id) => new Types.ObjectId(id.toString())
+    );
+
+    console.log({ fileIds });
+
+    await User.findByIdAndUpdate(user._id, {
+      $pullAll: {
+        messages: [...fileIds],
+      },
+    });
+
+    await File.findByIdAndUpdate(fileId, {
+      $set: {
+        messages: [],
+      },
+    });
+
+    const res = await Message.deleteMany({ fileId });
+    return { res };
   });

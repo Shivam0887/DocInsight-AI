@@ -2,11 +2,12 @@ import ChatHeader from "@/components/ChatHeader";
 import SideNavbar from "@/components/Navigation/SideNavbar";
 import Slider from "@/components/Slider";
 import UserFiles from "@/components/document/UserFiles";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { auth } from "@clerk/nextjs";
 import { ChevronRight } from "lucide-react";
 import { redirect } from "next/navigation";
 
-export default function MainLayout({
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -14,10 +15,12 @@ export default function MainLayout({
   const { userId } = auth();
   if (!userId) redirect("auth-callback?origin=chat");
 
+  const { isSubscribed, name } = await getUserSubscriptionPlan();
+
   return (
     <div className="flex w-full min-h-screen">
       <div className="hidden xl:block min-h-[200%]">
-        <SideNavbar />
+        <SideNavbar isSubscribed={isSubscribed} />
       </div>
       <div className="xl:hidden h-full">
         <Slider
@@ -28,13 +31,13 @@ export default function MainLayout({
           }
         >
           <div className="flex h-full">
-            <SideNavbar />
+            <SideNavbar isSubscribed={isSubscribed} />
             <UserFiles className="shadow-none" />
           </div>
         </Slider>
       </div>
       <div className="w-full">
-        <ChatHeader />
+        <ChatHeader plan={name ?? "Free"} />
         {children}
       </div>
     </div>
