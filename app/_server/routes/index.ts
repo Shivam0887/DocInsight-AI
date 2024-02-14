@@ -297,6 +297,8 @@ export const createStripeSession = privateProcedure.mutation(
     // where to redirect the user in case of the success or failure
     const billingUrl = absoluteUrl("/settings");
 
+    console.log({ billingUrl });
+
     const user = await User.findOne<UserType | null | undefined>({ userId });
     if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
