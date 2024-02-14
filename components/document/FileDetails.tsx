@@ -114,7 +114,10 @@ const FileDetails = ({ fileId }: { fileId: string }) => {
               </p>
 
               {/* after chatting with document */}
-              <p className="mt-4">{data?.summary ?? ""}</p>
+              <div className="mt-4 space-y-2">
+                <h3 className="text-xl font-semibold">Overview:</h3>
+                <p className="max-w-60 text-base">{data?.summary ?? ""}</p>
+              </div>
             </div>
 
             <div className="flex w-full gap-2 mt-6 max-w-80">

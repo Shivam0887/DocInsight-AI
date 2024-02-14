@@ -20,7 +20,7 @@ const ChatHeader = ({ plan }: { plan: string }) => {
           </span>
         </div>
         <Link
-          href="/conversations/pricing"
+          href="/pricing"
           className="mr-10 capitalize text-xs sm:text-sm font-medium px-5 py-2 sm:px-8 sm:py-3 text-yellow-500 bg-zinc-900 rounded-xl hover:bg-zinc-800 transition"
         >
           upgrade

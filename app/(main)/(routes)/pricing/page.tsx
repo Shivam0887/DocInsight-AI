@@ -1,3 +1,5 @@
+"use client";
+
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { PLANS } from "@/config/stripe";
 import {
@@ -6,15 +8,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { auth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { ArrowRight, Check, HelpCircle, Minus } from "lucide-react";
 import Link from "next/link";
 import Upgrade from "@/components/Upgrade";
 import { buttonVariants } from "@/components/ui/button";
 
-const pricingPage = () => {
-  const { userId } = auth();
+const PricingPage = () => {
+  const { userId } = useAuth();
 
   const pricingItems = [
     {
@@ -203,4 +205,4 @@ const pricingPage = () => {
   );
 };
 
-export default pricingPage;
+export default PricingPage;
