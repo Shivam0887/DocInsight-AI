@@ -3,11 +3,6 @@ import { trpc } from "@/app/_trpc/client";
 import Link from "next/link";
 
 const ChatHeader = ({ plan }: { plan: string }) => {
-  const { mutate } = trpc.createStripeSession.useMutation({
-    onSuccess({ url }) {
-      window.location.href = url ?? "/conversations/billing";
-    },
-  });
   return (
     <div className="w-full">
       <div className="h-16 bg-white flex items-center justify-between">

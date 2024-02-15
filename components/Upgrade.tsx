@@ -14,7 +14,9 @@ const Upgrade = () => {
       window.location.href = url ?? "/conversations";
     },
     onError(error) {
-      console.log("Error in create Stripe Session", error.message);
+      console.log("Error in create Stripe Session in Upgrade");
+      console.log(error.data);
+      console.log(error.message);
     },
   });
 

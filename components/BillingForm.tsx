@@ -28,17 +28,12 @@ const BillingForm = ({ subscriptionPlan }: BillingFormProps) => {
   const { mutate: createStripeSession, isPending } =
     trpc.createStripeSession.useMutation({
       onSuccess: ({ url }) => {
-        if (url) window.location.href = url;
-        if (!url) {
-          toast({
-            title: "There was a problem...",
-            description: "Please try again in a moment",
-            variant: "destructive",
-          });
-        }
+        window.location.href = url ?? "/conversations";
       },
       onError(error) {
-        console.log("Error in create Stripe Session", error.message);
+        console.log("Error in create Stripe Session in BillingForm");
+        console.log(error.data);
+        console.log(error.message);
       },
     });
 
