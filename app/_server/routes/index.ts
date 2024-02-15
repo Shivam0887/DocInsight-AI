@@ -35,12 +35,13 @@ export const authCallback = publicProcedure.query(async () => {
 
   try {
     connectToDB();
-    const dbUser = await User.findOne<UserType | null>({ userId: currUser.id });
+    const dbUser = await User.findOne<UserType>({ userId: currUser.id });
 
     if (!dbUser) {
       await User.create({
         userId: currUser.id,
         email: currUser.emailAddresses[0].emailAddress,
+        name: currUser.firstName,
       });
     }
 
@@ -298,7 +299,7 @@ export const createStripeSession = privateProcedure.mutation(
     const billingUrl = absoluteUrl("/settings");
     // console.log({ billingUrl });
 
-    const user = await User.findOne<UserType | null | undefined>({ userId });
+    const user = await User.findOne<UserType>({ userId });
     if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
     const subscriptionPlan = await getUserSubscriptionPlan();
@@ -312,11 +313,18 @@ export const createStripeSession = privateProcedure.mutation(
       return { url: stripeSession.url };
     }
 
+    const customer = await stripe.customers.create({
+      name: user.name,
+      email: user.email,
+    });
+
     const stripeSession = await stripe.checkout.sessions.create({
+      customer: customer.id,
+      payment_method_types: ["card"],
+      currency: "inr",
       success_url: billingUrl,
       cancel_url: billingUrl,
       mode: "subscription",
-      billing_address_collection: "auto",
       line_items: [
         {
           price: PLANS.find((plan) => plan.name === "Pro")?.price.priceIds.test,
