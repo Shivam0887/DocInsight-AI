@@ -296,8 +296,7 @@ export const createStripeSession = privateProcedure.mutation(
 
     // where to redirect the user in case of the success or failure
     const billingUrl = absoluteUrl("/settings");
-
-    console.log({ billingUrl });
+    // console.log({ billingUrl });
 
     const user = await User.findOne<UserType | null | undefined>({ userId });
     if (!user) throw new TRPCError({ code: "NOT_FOUND" });
@@ -316,9 +315,8 @@ export const createStripeSession = privateProcedure.mutation(
     const stripeSession = await stripe.checkout.sessions.create({
       success_url: billingUrl,
       cancel_url: billingUrl,
-      payment_method_types: ["card"],
       mode: "subscription",
-      billing_address_collection: "auto",
+      billing_address_collection: "required",
       line_items: [
         {
           price: PLANS.find((plan) => plan.name === "Pro")?.price.priceIds.test,
