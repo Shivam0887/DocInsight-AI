@@ -6,9 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { trpc } from "@/app/_trpc/client";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
+const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY!);
 
 const Upgrade = () => {
   const { mutate } = trpc.createStripeSession.useMutation({
@@ -16,7 +14,7 @@ const Upgrade = () => {
       window.location.href = url ?? "/conversations";
     },
     onError(error) {
-      console.log(error.message);
+      console.log("Error in create Stripe Session", error.message);
     },
   });
 

@@ -14,10 +14,13 @@ import {
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface BillingFormProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
 }
+
+const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY!);
 
 const BillingForm = ({ subscriptionPlan }: BillingFormProps) => {
   const { toast } = useToast();
@@ -33,6 +36,9 @@ const BillingForm = ({ subscriptionPlan }: BillingFormProps) => {
             variant: "destructive",
           });
         }
+      },
+      onError(error) {
+        console.log("Error in create Stripe Session", error.message);
       },
     });
 

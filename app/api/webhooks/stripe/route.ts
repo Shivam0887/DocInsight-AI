@@ -13,9 +13,13 @@ export async function POST(request: Request) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET || ""
+      process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (err) {
+    console.log(
+      "Webhook error - ",
+      err instanceof Error ? err.message : "Unknown Error"
+    );
     return new Response(
       `Webhook Error: ${err instanceof Error ? err.message : "Unknown Error"}`,
       { status: 400 }
@@ -25,6 +29,7 @@ export async function POST(request: Request) {
   const session = event.data.object as Stripe.Checkout.Session;
 
   if (!session?.metadata?.userId) {
+    console.log("userId not found in session's metadata");
     return new Response(null, {
       status: 200,
     });
@@ -49,6 +54,8 @@ export async function POST(request: Request) {
         },
       }
     );
+  } else if (event.type === "checkout.session.expired") {
+    console.log("Checkout session is expired");
   }
 
   // when the subscription plan renews
@@ -69,6 +76,8 @@ export async function POST(request: Request) {
         },
       }
     );
+  } else if (event.type === "invoice.payment_failed") {
+    console.log("payment_failed");
   }
 
   return new Response(null, { status: 200 });
