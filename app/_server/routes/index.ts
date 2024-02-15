@@ -316,7 +316,7 @@ export const createStripeSession = privateProcedure.mutation(
       success_url: billingUrl,
       cancel_url: billingUrl,
       mode: "subscription",
-      billing_address_collection: "required",
+      billing_address_collection: "auto",
       line_items: [
         {
           price: PLANS.find((plan) => plan.name === "Pro")?.price.priceIds.test,
