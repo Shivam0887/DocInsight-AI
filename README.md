@@ -1,7 +1,28 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DocInsight-AI - Chat with your PDF in seconds.
 
-## Getting Started
+## Getting Started 🚀
 
+Simplify Complex Documents, Save Time ⌚, and Chat Your Way to Clarity with DocInsight-AI - Your Ultimate 😎 Document Companion!
+Sign up and get started, Today!
+
+<img src="./readme_images/home.png"/>
+
+## Document upload ⬆️
+
+Upload your PDF file either using drop 'n' drop or PDF url, and start your exciting journey with DocInsight-AI.
+
+<img src="./readme_images/upload.png"/>
+
+## Chat 💬 with your PDF
+
+After uploading your PDF, you can start asking whatever you want.
+<b>Note:</b> If you ask question out of context (i.e., the content is not present in your PDF), then you will not get the respective answer.
+
+<img src="./readme_images/chat.png"/>
+
+## Installation ⏬
+
+Want to setup your own?
 First, run the development server:
 
 ```bash
@@ -10,27 +31,8 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

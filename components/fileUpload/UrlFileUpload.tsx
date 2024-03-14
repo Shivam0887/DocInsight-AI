@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { trpc } from "@/app/_trpc/client";
 import { Check, Loader2 } from "lucide-react";
-import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 type UrlFileUploadProps = {
   setFileInfo: (info: { fileId: string }) => void;
@@ -95,7 +94,7 @@ const UrlFileUpload = ({ setFileInfo }: UrlFileUploadProps) => {
               Unsupported format
             </p>
             <p className="text-xs font-medium text-center">
-              Supported formats: &apos;.pdf&apos;, &apos;.txt&apos;
+              Supported format: &apos;.pdf&apos;
             </p>
           </div>
         ) : // isSecured?
