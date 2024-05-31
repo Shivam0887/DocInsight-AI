@@ -10,13 +10,14 @@ import {
 import { currentUser } from "@clerk/nextjs";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { randomUUID } from "crypto";
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-import { OpenAIEmbeddings } from "@langchain/openai";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { PineconeStore } from "@langchain/pinecone";
 import { pineconeIndex } from "@/lib/pinecone";
 import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { PLANS } from "@/config/stripe";
 import { genAI } from "@/lib/ai";
+import { TaskType } from "@google/generative-ai";
 
 const f = createUploadthing();
 
@@ -90,9 +91,10 @@ const onUploadComplete = async ({
       });
     } else {
       // vector embedding
-      const genEmbeddings = new OpenAIEmbeddings({
-        openAIApiKey: process.env.OPENAI_API_KEY,
-        modelName: "text-embedding-3-small",
+      const genEmbeddings = new GoogleGenerativeAIEmbeddings({
+        apiKey: process.env.GOOGLE_GENAI_API_KEY!,
+        model: "embedding-001",
+        taskType: TaskType.SEMANTIC_SIMILARITY,
       });
 
       const model = genAI.getGenerativeModel({
@@ -129,7 +131,7 @@ const onUploadComplete = async ({
       fileId: dbFile._id.toString(),
     };
   } catch (error: any) {
-    console.log("error - ", error.any);
+    console.log("error - ", error?.message);
     await File.findByIdAndUpdate(dbFile._id, {
       $set: {
         uploadStatus: UploadStatus.FAILED,

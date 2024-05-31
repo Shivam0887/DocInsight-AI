@@ -13,7 +13,7 @@ export default async function ConversationLayout({
   if (!userId) redirect("/auth-callback?origin=/");
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)]">
+    <div className="flex overflow-hidden h-[calc(100vh-64px)]">
       <UserFiles className="hidden xl:block" />
       {children}
     </div>

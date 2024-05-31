@@ -15,8 +15,8 @@ import {
 import { randomUUID } from "crypto";
 import { UTApi } from "uploadthing/server";
 
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-import { OpenAIEmbeddings } from "@langchain/openai";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { PineconeStore } from "@langchain/pinecone";
 import { pineconeIndex } from "@/lib/pinecone";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
@@ -25,6 +25,7 @@ import { PLANS } from "@/config/stripe";
 import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
 import { genAI } from "@/lib/ai";
 import { ObjectId, Types } from "mongoose";
+import { TaskType } from "@google/generative-ai";
 
 const utapi = new UTApi();
 
@@ -200,9 +201,10 @@ export const uploadFileFromUrl = privateProcedure
         });
       } else {
         // vector embedding
-        const genEmbeddings = new OpenAIEmbeddings({
-          openAIApiKey: process.env.OPENAI_API_KEY,
-          modelName: "text-embedding-3-small",
+        const genEmbeddings = new GoogleGenerativeAIEmbeddings({
+          apiKey: process.env.GOOGLE_GENAI_API_KEY!,
+          model: "embedding-001",
+          taskType: TaskType.SEMANTIC_SIMILARITY,
         });
 
         const model = genAI.getGenerativeModel({
@@ -239,7 +241,7 @@ export const uploadFileFromUrl = privateProcedure
         fileId: dbFile._id.toString(),
       };
     } catch (error: any) {
-      console.log("error - ", error.any);
+      console.log("error - ", error?.message);
       await File.findByIdAndUpdate(dbFile._id, {
         $set: {
           uploadStatus: UploadStatus.FAILED,
@@ -297,7 +299,6 @@ export const createStripeSession = privateProcedure.mutation(
 
     // where to redirect the user in case of the success or failure
     const billingUrl = absoluteUrl("/settings");
-    console.log({ billingUrl });
 
     const user = await User.findOne<UserType>({ userId });
     if (!user) throw new TRPCError({ code: "NOT_FOUND" });
@@ -362,8 +363,6 @@ export const deleteChat = privateProcedure
     const fileIds = fileMessages.messages.map(
       (id) => new Types.ObjectId(id.toString())
     );
-
-    console.log({ fileIds });
 
     await User.findByIdAndUpdate(user._id, {
       $pullAll: {

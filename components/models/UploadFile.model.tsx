@@ -26,7 +26,7 @@ const UploadFileModal = ({
       <DialogTrigger asChild className="cursor-pointer">
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-max sm:max-w-[600px] rounded-xl">
+      <DialogContent className="p-0 max-w-max sm:max-w-[600px] rounded-xl">
         <UploadFile onlyDropdown={onlyDropdown} isSubscribed={isSubscribed} />
       </DialogContent>
     </Dialog>

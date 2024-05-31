@@ -48,8 +48,8 @@ const UrlFileUpload = ({ setFileInfo }: UrlFileUploadProps) => {
 
   return (
     <div className="mt-10 w-full">
-      <div className="flex items-center border-2 border-zinc-300 rounded-lg w-full h-[40px]">
-        <span className="text-xs text-zinc-500 ml-2 font-light">https://</span>
+      <div className="flex items-center border-2 border-zinc-500 rounded-lg w-full h-[40px]">
+        <span className="text-xs text-zinc-600 ml-2 font-light">https://</span>
         <div className="border-r-2 border-zinc-300 inline-block h-full mx-2" />
         <input
           type="text"
@@ -59,7 +59,7 @@ const UrlFileUpload = ({ setFileInfo }: UrlFileUploadProps) => {
           onChange={handleChange}
           className={`${
             isValidURL ? "text-green-500" : "text-red-500"
-          } w-[80%] border-none outline-none text-xs font-light`}
+          } w-[80%] border-none outline-none text-neutral-600 text-xs font-light`}
         />
       </div>
       <div className="flex gap-6 items-center mt-6">

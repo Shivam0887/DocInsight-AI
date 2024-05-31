@@ -20,7 +20,7 @@ const ConversationPage = async ({ params }: { params: { fileId: string } }) => {
   if (!file) notFound();
 
   return (
-    <div className="flex-1 justify-between flex flex-col h-[calc(100vh-4rem)]">
+    <div className="flex-1 justify-between flex flex-col md:overflow-hidden overflow-y-scroll h-[calc(100vh-4rem)] md:p-0 p-2">
       <div className="mx-auto w-full max-w-8xl grow lg:flex h-full">
         {/* left side */}
 
@@ -31,7 +31,7 @@ const ConversationPage = async ({ params }: { params: { fileId: string } }) => {
         </div>
 
         {/* right side */}
-        <div className="shrink-0 flex-[0.75] px-1 lg:px-0 border-t border-gray-200 lg:border-t-0 h-[calc(100%-44px)] lg:h-full">
+        <div className="shrink-0 flex-[0.75] px-1 lg:px-0 border-l-2 border-t border-gray-200 lg:border-t-0 h-[calc(100%-44px)] lg:h-full">
           <ChatWrapper fileId={file._id.toString()} />
         </div>
       </div>

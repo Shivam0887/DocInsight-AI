@@ -191,7 +191,7 @@ const PricingPage = () => {
                         className: "w-full",
                       })}
                     >
-                      {userId ? "Upgrade now" : "Sign-up"}
+                      Sign-up
                       <ArrowRight className="h-5 w-5 ml-1.5" />
                     </Link>
                   )}

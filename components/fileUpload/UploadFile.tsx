@@ -32,7 +32,7 @@ const UploadFile = ({
   }
 
   return (
-    <div className={cn("w-full py-12 px-5 xs:px-6 sm:px-[72px]", className)}>
+    <div className={cn("w-full p-6 sm:px-[72px]", className)}>
       <div className="rounded-3xl bg-zinc-100 max-w-max p-1 flex gap-4">
         <button
           className={`py-3 px-4 ${

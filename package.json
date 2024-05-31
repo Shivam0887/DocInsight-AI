@@ -11,8 +11,11 @@
   "dependencies": {
     "@clerk/nextjs": "^4.29.2",
     "@clerk/themes": "^1.7.9",
-    "@google/generative-ai": "^0.2.0",
+    "@google/generative-ai": "^0.12.0",
     "@hookform/resolvers": "^3.3.4",
+    "@langchain/community": "^0.2.4",
+    "@langchain/core": "^0.2.5",
+    "@langchain/google-genai": "^0.0.16",
     "@langchain/openai": "^0.0.14",
     "@langchain/pinecone": "^0.0.3",
     "@mantine/hooks": "^7.5.2",
@@ -38,7 +41,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
-    "langchain": "^0.1.13",
+    "langchain": "^0.2.4",
     "lucide-react": "^0.303.0",
     "mongoose": "^8.1.1",
     "next": "14.0.4",
@@ -70,5 +73,14 @@
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
+  },
+  "resolutions": {
+    "@langchain/core": "^0.2.5"
+  },
+  "overrides": {
+    "@langchain/core": "^0.2.5"
+  },
+  "pnpm": {
+    "@langchain/core": "^0.2.5"
   }
 }

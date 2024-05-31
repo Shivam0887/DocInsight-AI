@@ -11,7 +11,7 @@ import {
   UserType,
 } from "@/lib/models/models";
 
-import { OpenAIEmbeddings } from "@langchain/openai";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { PineconeStore } from "@langchain/pinecone";
 import { genAI, openAI } from "@/lib/ai";
 import { pineconeIndex } from "@/lib/pinecone";
@@ -20,6 +20,7 @@ import {
   StreamingTextResponse,
   GoogleGenerativeAIStream,
 } from "ai";
+import { TaskType } from "@google/generative-ai";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -67,12 +68,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const genEmbedding = new OpenAIEmbeddings({
-      openAIApiKey: process.env.OPENAI_API_KEY,
-      modelName: "text-embedding-3-small",
+    // vector embedding
+    const genEmbeddings = new GoogleGenerativeAIEmbeddings({
+      apiKey: process.env.GOOGLE_GENAI_API_KEY!,
+      model: "embedding-001",
+      taskType: TaskType.SEMANTIC_SIMILARITY,
     });
 
-    const vectorStore = await PineconeStore.fromExistingIndex(genEmbedding, {
+    const vectorStore = await PineconeStore.fromExistingIndex(genEmbeddings, {
       pineconeIndex,
       namespace: file._id.toJSON(),
     });
@@ -96,21 +99,28 @@ export async function POST(req: NextRequest) {
       history: [
         {
           role: "user",
-          parts: `Only use the provided pieces of context (or previous conversation if needed) to accurately answer the users question either in markdown format or in bullet points. \n Highlight the important headings and words. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
+          parts: [
+            {
+              text: `Only use the provided pieces of context (or previous conversation if needed) to accurately answer the users question either in markdown format or in bullet points. \n Highlight the important headings and words. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
 
-          PREVIOUS CONVERSATION:
-          ${formattedPrevMsg.map((message) => {
-            if (message.role === "user") return `User: ${message.content}\n`;
-            return `Model: ${message.content}\n`;
-          })}
-
-          CONTEXT:
-          ${results.map((r) => r.pageContent).join("\n")}`,
+            PREVIOUS CONVERSATION:
+            ${formattedPrevMsg.map((message) => {
+              if (message.role === "user") return `User: ${message.content}\n`;
+              return `Model: ${message.content}\n`;
+            })}
+  
+            CONTEXT:
+            ${results.map((r) => r.pageContent).join("\n")}`,
+            },
+          ],
         },
         {
           role: "model",
-          parts:
-            "Only use the provided pieces of context (or previous conversation if needed) to accurately answer the users question either in markdown format or in bullet points. \nHighlight the important headings and words.",
+          parts: [
+            {
+              text: "Only use the provided pieces of context (or previous conversation if needed) to accurately answer the users question either in markdown format or in bullet points. \nHighlight the important headings and words.",
+            },
+          ],
         },
       ],
     });
