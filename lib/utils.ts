@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function absoluteUrl(path: string) {
-  if (process.env.VERCEL_URL) return `https://doc-insight-ai.vercel.app${path}`;
-  return `http://localhost:3000${path}`;
-}
+export const absoluteUrl = () => {
+  if (process.env.VERCEL_URL) return "https://doc-insight-ai.vercel.app";
+  return "http://localhost:3000";
+};

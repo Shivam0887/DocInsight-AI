@@ -297,9 +297,6 @@ export const createStripeSession = privateProcedure.mutation(
   async ({ ctx }) => {
     const { userId } = ctx;
 
-    // where to redirect the user in case of the success or failure
-    const billingUrl = absoluteUrl("/settings");
-
     const user = await User.findOne<UserType>({ userId });
     if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
@@ -308,7 +305,7 @@ export const createStripeSession = privateProcedure.mutation(
     if (subscriptionPlan.isSubscribed && user.stripeCustomerId) {
       const stripeSession = await stripe.billingPortal.sessions.create({
         customer: user.stripeCustomerId,
-        return_url: billingUrl,
+        return_url: `${absoluteUrl()}/settings`,
       });
 
       return { url: stripeSession.url };
@@ -323,8 +320,8 @@ export const createStripeSession = privateProcedure.mutation(
       customer: customer.id,
       payment_method_types: ["card"],
       currency: "inr",
-      success_url: billingUrl,
-      cancel_url: billingUrl,
+      success_url: `${absoluteUrl()}/settings`,
+      cancel_url: `${absoluteUrl()}/settings`,
       mode: "subscription",
       line_items: [
         {

@@ -13,7 +13,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: absoluteUrl("/api/trpc"),
+          url: `${absoluteUrl()}/api/trpc`,
         }),
       ],
     })
