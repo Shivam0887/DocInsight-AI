@@ -305,7 +305,7 @@ export const createStripeSession = privateProcedure.mutation(
     if (subscriptionPlan.isSubscribed && user.stripeCustomerId) {
       const stripeSession = await stripe.billingPortal.sessions.create({
         customer: user.stripeCustomerId,
-        return_url: `${absoluteUrl()}/settings`,
+        return_url: `https://doc-insight-ai.vercel.app/settings`,
       });
 
       return { url: stripeSession.url };
@@ -320,8 +320,8 @@ export const createStripeSession = privateProcedure.mutation(
       customer: customer.id,
       payment_method_types: ["card"],
       currency: "inr",
-      success_url: `${absoluteUrl()}/settings`,
-      cancel_url: `${absoluteUrl()}/settings`,
+      success_url: `https://doc-insight-ai.vercel.app/settings`,
+      cancel_url: `https://doc-insight-ai.vercel.app/settings`,
       mode: "subscription",
       line_items: [
         {
