@@ -10,12 +10,11 @@ const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY!);
 
 const Upgrade = () => {
   const { mutate } = trpc.createStripeSession.useMutation({
-    onSuccess({ url }) {
-      window.location.href = url ?? "/conversations";
+    onSuccess(data) {
+      window.location.href = data && data.url ? data.url : "/conversations";
     },
     onError(error) {
       console.log("Error in create Stripe Session in Upgrade");
-      console.log(error.data);
       console.log(error.message);
     },
   });

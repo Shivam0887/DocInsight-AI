@@ -1,7 +1,11 @@
-import { stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
-import type Stripe from "stripe";
+import Stripe from "stripe";
 import { User } from "@/lib/models/models";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2023-10-16",
+  typescript: true,
+});
 
 export async function POST(request: Request) {
   const body = await request.text();

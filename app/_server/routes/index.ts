@@ -22,12 +22,18 @@ import { pineconeIndex } from "@/lib/pinecone";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { absoluteUrl } from "@/lib/utils";
 import { PLANS } from "@/config/stripe";
-import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { genAI } from "@/lib/ai";
 import { ObjectId, Types } from "mongoose";
 import { TaskType } from "@google/generative-ai";
+import Stripe from "stripe";
 
 const utapi = new UTApi();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2023-10-16",
+  typescript: true,
+});
 
 export const authCallback = publicProcedure.query(async () => {
   const currUser = await currentUser();
@@ -297,44 +303,49 @@ export const createStripeSession = privateProcedure.mutation(
   async ({ ctx }) => {
     const { userId } = ctx;
 
-    const user = await User.findOne<UserType>({ userId });
-    if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+    try {
+      const user = await User.findOne<UserType>({ userId });
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
-    const subscriptionPlan = await getUserSubscriptionPlan();
+      const subscriptionPlan = await getUserSubscriptionPlan();
 
-    if (subscriptionPlan.isSubscribed && user.stripeCustomerId) {
-      const stripeSession = await stripe.billingPortal.sessions.create({
-        customer: user.stripeCustomerId,
-        return_url: `https://doc-insight-ai.vercel.app/settings`,
+      if (subscriptionPlan.isSubscribed && user.stripeCustomerId) {
+        const stripeSession = await stripe.billingPortal.sessions.create({
+          customer: user.stripeCustomerId,
+          return_url: `https://doc-insight-ai.vercel.app/settings`,
+        });
+
+        return { url: stripeSession.url };
+      }
+
+      const customer = await stripe.customers.create({
+        name: user.name,
+        email: user.email,
+      });
+
+      const stripeSession = await stripe.checkout.sessions.create({
+        customer: customer.id,
+        payment_method_types: ["card"],
+        currency: "inr",
+        success_url: `https://doc-insight-ai.vercel.app/settings`,
+        cancel_url: `https://doc-insight-ai.vercel.app/settings`,
+        mode: "subscription",
+        line_items: [
+          {
+            price: PLANS.find((plan) => plan.name === "Pro")?.price.priceIds
+              .test,
+            quantity: 1,
+          },
+        ],
+        metadata: {
+          userId,
+        },
       });
 
       return { url: stripeSession.url };
+    } catch (error: any) {
+      console.log(error);
     }
-
-    const customer = await stripe.customers.create({
-      name: user.name,
-      email: user.email,
-    });
-
-    const stripeSession = await stripe.checkout.sessions.create({
-      customer: customer.id,
-      payment_method_types: ["card"],
-      currency: "inr",
-      success_url: `https://doc-insight-ai.vercel.app/settings`,
-      cancel_url: `https://doc-insight-ai.vercel.app/settings`,
-      mode: "subscription",
-      line_items: [
-        {
-          price: PLANS.find((plan) => plan.name === "Pro")?.price.priceIds.test,
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        userId,
-      },
-    });
-
-    return { url: stripeSession.url };
   }
 );
 
