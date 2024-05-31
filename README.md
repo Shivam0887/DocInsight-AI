@@ -9,7 +9,7 @@ Sign up and get started, Today!
 
 ## Document upload ⬆️
 
-Upload your PDF file either using drop 'n' drop or PDF url, and start your exciting journey with DocInsight-AI.
+Upload your PDF file either using drag 'n' drop or PDF url, and start your exciting journey with DocInsight-AI.
 
 <img src="./readme_images/upload.png"/>
 
