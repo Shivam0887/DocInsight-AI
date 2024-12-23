@@ -52,7 +52,7 @@ const PricingPage = () => {
       quota: PLANS.find((p) => p.slug === "pro")!.quota,
       features: [
         {
-          text: "16 pages per PDF",
+          text: "25 pages per PDF",
           footnote: "The maximum amount of pages per PDF-file.",
         },
         {

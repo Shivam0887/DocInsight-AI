@@ -93,12 +93,12 @@ const onUploadComplete = async ({
       // vector embedding
       const genEmbeddings = new GoogleGenerativeAIEmbeddings({
         apiKey: process.env.GOOGLE_GENAI_API_KEY!,
-        model: "embedding-001",
+        model: "text-embedding-004",
         taskType: TaskType.SEMANTIC_SIMILARITY,
       });
 
       const model = genAI.getGenerativeModel({
-        model: "gemini-pro",
+        model: "gemini-1.5-flash",
       });
 
       const prompt = `${docs[0].pageContent}\n\n Generate the summary of the provided content within 50 words.`;
