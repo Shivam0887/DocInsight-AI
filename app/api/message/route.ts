@@ -13,14 +13,12 @@ import {
 
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { PineconeStore } from "@langchain/pinecone";
-import { genAI, openAI } from "@/lib/ai";
+import { genAI } from "@/lib/ai";
 import { pineconeIndex } from "@/lib/pinecone";
 import {
-  OpenAIStream,
   StreamingTextResponse,
   GoogleGenerativeAIStream,
 } from "ai";
-import { TaskType } from "@google/generative-ai";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -71,8 +69,7 @@ export async function POST(req: NextRequest) {
     // vector embedding
     const genEmbeddings = new GoogleGenerativeAIEmbeddings({
       apiKey: process.env.GOOGLE_GENAI_API_KEY!,
-      model: "embedding-001",
-      taskType: TaskType.SEMANTIC_SIMILARITY,
+      model: "text-embedding-004",
     });
 
     const vectorStore = await PineconeStore.fromExistingIndex(genEmbeddings, {
@@ -92,7 +89,7 @@ export async function POST(req: NextRequest) {
     }));
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro",
+      model: "gemini-1.5-flash",
     });
 
     const chat = model.startChat({

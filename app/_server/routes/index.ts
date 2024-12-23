@@ -20,12 +20,10 @@ import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { PineconeStore } from "@langchain/pinecone";
 import { pineconeIndex } from "@/lib/pinecone";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
-import { absoluteUrl } from "@/lib/utils";
 import { PLANS } from "@/config/stripe";
 import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { genAI } from "@/lib/ai";
 import { ObjectId, Types } from "mongoose";
-import { TaskType } from "@google/generative-ai";
 import Stripe from "stripe";
 
 const utapi = new UTApi();
@@ -41,7 +39,7 @@ export const authCallback = publicProcedure.query(async () => {
   if (!currUser?.id) throw new TRPCError({ code: "UNAUTHORIZED" });
 
   try {
-    connectToDB();
+    await connectToDB();
     const dbUser = await User.findOne<UserType>({ userId: currUser.id });
 
     if (!dbUser) {
@@ -62,7 +60,7 @@ export const authCallback = publicProcedure.query(async () => {
 export const getFiles = privateProcedure.query(async ({ ctx }) => {
   const { userId } = ctx;
 
-  connectToDB();
+  await connectToDB();
   const user = await User.findOne<UserType | null>({ userId });
   if (!user) throw new TRPCError({ code: "UNAUTHORIZED" });
 
@@ -86,6 +84,7 @@ export const getFileUploadStatus = privateProcedure
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
+    await connectToDB();
     const file = await File.findOne<FileType | null>({
       _id: input.fileId,
       user: user._id,
@@ -105,7 +104,7 @@ export const getFile = privateProcedure
   .query(async ({ ctx, input }) => {
     const { userId } = ctx;
 
-    connectToDB();
+    await connectToDB();
     const user = await User.findOne<UserType | null>({ userId });
     if (!user) throw new TRPCError({ code: "UNAUTHORIZED" });
 
@@ -130,7 +129,7 @@ export const deleteFile = privateProcedure
   .mutation(async ({ ctx, input }) => {
     const { userId } = ctx;
 
-    connectToDB();
+    await connectToDB();
     const user = await User.findOne<UserType | null>({ userId });
     if (!user) throw new TRPCError({ code: "UNAUTHORIZED" });
 
@@ -169,6 +168,7 @@ export const uploadFileFromUrl = privateProcedure
 
     const { key, name, url, size } = data;
 
+    await connectToDB();
     const dbFile: FileType = await File.create({
       name,
       key,
@@ -209,12 +209,11 @@ export const uploadFileFromUrl = privateProcedure
         // vector embedding
         const genEmbeddings = new GoogleGenerativeAIEmbeddings({
           apiKey: process.env.GOOGLE_GENAI_API_KEY!,
-          model: "embedding-001",
-          taskType: TaskType.SEMANTIC_SIMILARITY,
+          model: "text-embedding-004",
         });
 
         const model = genAI.getGenerativeModel({
-          model: "gemini-pro",
+          model: "gemini-1.5-flash",
         });
 
         const prompt = `${docs[0].pageContent}\n\n Generate the summary of the provided content within 50 words.`;
@@ -269,6 +268,7 @@ export const getFileMessages = privateProcedure
     const { fileId, cursor } = input;
     const limit = input.limit ?? INFINITE_QUERY_LIMIT;
 
+    await connectToDB();
     const dbUser = await User.findOne({ userId });
 
     const file = await File.findOne({
@@ -357,7 +357,7 @@ export const deleteChat = privateProcedure
   )
   .mutation(async ({ ctx, input }) => {
     const { fileId } = input;
-    connectToDB();
+    await connectToDB();
 
     const user = await User.findOne<UserType>({ userId: ctx.userId });
 
