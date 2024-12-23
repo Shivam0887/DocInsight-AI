@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FileUploaderDropzone } from "./FileUploaderDropzone";
 import { Progress } from "@/components/ui/progress";
 import { File, Loader } from "lucide-react";
@@ -17,6 +17,7 @@ const UploadFile = ({
   isSubscribed: boolean;
   onlyDropdown?: boolean;
 }) => {
+  const router = useRouter();
   const [isSelect, setIsSelect] = useState(false);
   const [progress, setProgress] = useState(0);
   const [fileName, setFileName] = useState<string>("");
@@ -24,12 +25,11 @@ const UploadFile = ({
     fileId: "",
   });
 
-  const router = useRouter();
-  if (fileInfo.fileId) {
-    setTimeout(() => {
+  useEffect(() => {
+    if (fileInfo.fileId) {
       router.push(`/conversations/${fileInfo.fileId}`);
-    }, 100);
-  }
+    }
+  }, [fileInfo.fileId, router]);
 
   return (
     <div className={cn("w-full p-6 sm:px-[72px]", className)}>
