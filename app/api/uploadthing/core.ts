@@ -74,6 +74,16 @@ const onUploadComplete = async ({
 
     const pages = docs.length;
 
+    if (pages === 0 || !docs[0]?.pageContent) {
+      await File.findByIdAndUpdate(dbFile._id, {
+        $set: {
+          uploadStatus: UploadStatus.FAILED,
+          pages: 0,
+        },
+      });
+      return;
+    }
+
     const { subscriptionPlan } = metadata;
     const { isSubscribed } = subscriptionPlan;
 
