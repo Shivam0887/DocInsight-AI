@@ -209,11 +209,11 @@ export const uploadFileFromUrl = privateProcedure
         // vector embedding
         const genEmbeddings = new GoogleGenerativeAIEmbeddings({
           apiKey: process.env.GOOGLE_GENAI_API_KEY!,
-          model: "text-embedding-004",
+          model: process.env.GEMINI_EMBEDDING_MODEL!
         });
 
         const model = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
+          model: process.env.GEMINI_MODEL!,
         });
 
         const prompt = `${docs[0].pageContent}\n\n Generate the summary of the provided content within 50 words.`;
